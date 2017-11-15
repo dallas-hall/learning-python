@@ -5,6 +5,7 @@ def hi():
 
 hi()
 
+# argument passing
 def hi2(message):
     print(str(message))
     
