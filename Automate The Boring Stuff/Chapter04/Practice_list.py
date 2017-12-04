@@ -4,7 +4,7 @@
 spam = [[],[],[]]
 for i in range(10):
     for j in range(3):
-        spam[j].append(i)
+        spam[j].append('list' + str(j) + ' & index ' + str(i))
 
 # print all of list 0
 print('\nPrinting all elements of one list')
@@ -17,12 +17,8 @@ print('\nPrinting all elements of all lists, one at a time')
 for i in range(len(spam)):
     for j in range(len(spam[i])):
         print(spam[i][j])
-
-spam.sort()
-print('\nPrinting all elements of all lists, one at a time, after sorting')
-for i in range(len(spam)):
-    for j in range(len(spam[i])):
-        print(spam[i][j])
     # print a new line at the end of each list
-    if j == len(spam[j]) - 1:
-        print('\n')
+    print('')
+
+# sort the list, which is useless here as it is already sorted
+spam.sort()
