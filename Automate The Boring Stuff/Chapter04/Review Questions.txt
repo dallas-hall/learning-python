@@ -3,6 +3,8 @@ Q:
 
 1. What is []?
 
+This is an empty list.
+
 Q:
 
 
