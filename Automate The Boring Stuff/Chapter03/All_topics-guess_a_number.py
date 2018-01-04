@@ -9,6 +9,8 @@ for amountOfGuesses in range(1, 7):
     print('Enter your guess.')
     # validate the users input in try / except block
     try:
+        # create a global variable
+        global guess
         # try to cast from string to int, input() returns a string
         guess = int(input())
     # catch input errors for user input that isn't an int

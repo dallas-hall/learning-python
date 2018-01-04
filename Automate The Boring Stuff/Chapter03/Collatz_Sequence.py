@@ -36,5 +36,3 @@ def collatz(input):
 print('Enter a number.')
 userNumber = input()
 collatz(userNumber)
-
-        
