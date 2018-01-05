@@ -1,4 +1,4 @@
-#random Boolean comparison
+# random Boolean comparison
 print('Some random Boolean comparison')
 print('Does 42 == 42?')
 print(42 == 42)
@@ -9,22 +9,22 @@ print('cat' == 'dog')
 print('Enter your age')
 myAge = input()
 print('Is your age greater than or equal to 18?')
-#remember that input() saves a str so it needs to be converted to an int with int()
+# remember that input() saves a str so it needs to be converted to an int with int()
 print(int(myAge) >= 18)
 
-#De Morgan's law one
+# De Morgan's law one
 print('\nDe Morgan\'s Law')
 print('Does not(A or B) == not A and not B?')
-A = not(True or True)
+A = not (True or True)
 B = not True and not True
 print(A == B)
-#De Morgan's law two
+# De Morgan's law two
 print('Does not(A and B) == not A or not B?')
-A = not(True and True)
+A = not (True and True)
 B = not True or not True
 print(A == B)
-      
-#Truth tables - remember that string concatenation needs to be string to string
+
+# Truth tables - remember that string concatenation needs to be string to string
 print('\nAnd Truth Table')
 print('True and True = ' + str(True and True))
 print('True and False = ' + str(True and False))
@@ -56,7 +56,7 @@ print('not False or not True = ' + str(not False or not True))
 print('not False or not False = ' + str(not False or not False))
 
 print('\nNot Excelusive Or Truth Table')
-print('not True xor not True = ' + str(not True ^ not True))
-print('not True xor not False = ' + str(not True ^ not False))
-print('not False xor not True = ' + str(not False ^ not True))
-print('not False xor not False = ' + str(not False ^ not False))
+print('not True xor not True = ' + str((not True) ^ (not True)))
+print('not True xor not False = ' + str((not True) ^ (not False)))
+print('not False xor not True = ' + str((not False) ^ (not True)))
+print('not False xor not False = ' + str((not False) ^ (not False)))
