@@ -7,6 +7,6 @@ name = input()
 
 # process user input
 if name not in myPets:
-    print("I don't have a pet named " + name + '.')
+	print("I don't have a pet named " + name + '.')
 else:
-    print(name + ' is my pet.')
+	print(name + ' is my pet.')
