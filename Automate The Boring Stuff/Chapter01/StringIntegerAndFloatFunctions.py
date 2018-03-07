@@ -16,6 +16,7 @@ anInt = int(8)
 print(anInt)
 print(8)
 # int() is good for casting a string to an integer, like after using input()
+print('Enter a number, 1 will be added to it.')
 aStr2 = input()
 print(aStr2 + ' + 1 = ' + str(int(aStr2) + 1))
 # int() is also good for rounding floating point numbers
