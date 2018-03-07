@@ -1,4 +1,4 @@
-# The Collatz Sequence
+# The Collatz Sequence - https://en.wikipedia.org/wiki/Collatz_conjecture
 # define the function with 1 parameter
 def collatz(input):
 	# try to cast the paramater to an int
@@ -18,7 +18,7 @@ def collatz(input):
 		# check if odd
 		elif number % 2 == 1:
 			# integer division by 3
-			number = (number // 3)
+			number = (number * 3 + 1)
 		# check if the answer is 1
 		if number == 1:
 			# if it is 1 we are done
