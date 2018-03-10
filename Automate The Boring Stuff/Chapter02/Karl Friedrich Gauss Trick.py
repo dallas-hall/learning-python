@@ -1,11 +1,13 @@
+print('For loop summing, 1 to 100.')
 total = 0
 for num in range(101):
 	total = total + num
 print(total)
-debugging = True
+debugging = False
 
 
 def gauss_trick_split_list(end_number):
+	print('Single list split into 2, reverse the second list, sum each half together.')
 	total = 0
 	all_numbers = []
 	# If the number amount is odd, prepend a 0
@@ -32,11 +34,12 @@ def gauss_trick_split_list(end_number):
 
 
 def gauss_trick_2_lists(end_number):
+	print('Single list duplicated, second list reversed, sum together, divide by 2 at the end.')
 	total = 0
 	all_numbers = []
 	for i in range(end_number):
 		all_numbers.append(i + 1)
-	list2 = all_numbers.copy()
+	list2 = list(all_numbers)
 	list2.reverse()
 	list_length = len(all_numbers)
 	if debugging:
@@ -46,7 +49,10 @@ def gauss_trick_2_lists(end_number):
 	for i in range(list_length):
 		if debugging:
 			print(str(all_numbers[i]) + ' ' + str(list2[i]))
+		total += (all_numbers[i] + list2[i])
+	# Divide by 2 at the end to get the right answer
+	print(total / 2)
 
-
-gauss_trick_split_list(9)
-gauss_trick_2_lists(9)
+# 100 should equal 5050
+gauss_trick_split_list(100)
+gauss_trick_2_lists(100)
