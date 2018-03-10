@@ -20,6 +20,13 @@ answers = ['It is certain',
            'Outlook not so good',
            'Very doubtful']
 
+# insert a new item at index 1
+answers.insert(1, 'HIGHLY unlikely, bra.')
+print(answers)
+
+# delete an answer
+
+
 # print 3 random questions & answers
 for i in range(3):
     # use random to create a prn between 0 and the length of the list - 1
