@@ -22,3 +22,6 @@ for k, v in hex_chars.items():
 print()
 
 pprint.pprint(hex_chars)
+print()
+aString = pprint.pformat(hex_chars)
+print(aString)
