@@ -1,13 +1,7 @@
-Q:
-	
-
 1. What are the two values of the Boolean data type? How do you write them?
 
 True
 False
-
-Q:
-	
 
 2. What are the three Boolean operators?
 
@@ -15,13 +9,8 @@ not
 and
 or
 
-Q:
-	
-
 3. Write out the truth tables of each Boolean operator (that is, every possible combination of Boolean values for the operator and what they evaluate to).
 
-Q:
-	
 @@@ And Truth Table @@@
 True and True = True
 True and False = False
@@ -67,12 +56,7 @@ not ((5 > 4) or (3 == 5))
 (True and True) and (True == False) is False
 (not False) or (not True) is True
 
-Q:
-	
-
 5. What are the six comparison operators?
-
-Q:
 
 >
 >=
@@ -83,14 +67,10 @@ Q:
 
 6. What is the difference between the equal to operator and the assignment operator?
 
-Q:
-
 = will assign data on the right to the variable on the left
 == will test if the data on either side is equal to each other	
 
 7. Explain what a condition is and where you would use one.
-
-Q:
 
 A condition is an expression that can be evalauted down to boolean result.  It is used when you what control program flow.	
 
@@ -106,12 +86,7 @@ A condition is an expression that can be evalauted down to boolean result.  It i
     2) print('spam')
 1) print('spam')
 
-Q:
-	
-
 9. Write code that prints Hello if 1 is stored in spam, prints Howdy if 2 is stored in spam, and prints Greetings! if anything else is stored in spam.
-
-Q:
 
 print('Enter a number')
 #remember that input() stores a string
@@ -126,28 +101,20 @@ else :
 
 10. What can you press if your program is stuck in an infinite loop?
 
-Q:
-
 control + c	
 
 11. What is the difference between break and continue?
-
-Q:
 
 break will exit the iteration and the loop
 continue will exit the iteration and continue the loop	
 
 12. What is the difference between range(10), range(0, 10), and range(0, 10, 1) in a for loop?
 
-Q:
-	
 range(10) is up to 10
 range(0, 10) is between 0 and 10, excluding 10.
 range(0, 10, 1) is between 0 and 10, excluding 10, and increment by 1)
 
 13. Write a short program that prints the numbers 1 to 10 using a for loop. Then write an equivalent program that prints the numbers 1 to 10 using a while loop.
-
-Q:
 
 #don't forget the trailing:
 for i in range(10):
@@ -165,7 +132,7 @@ while i <= 10:
 import spam
 	#use the imported function with the module as prefix
     spam.bacon()
-	
+
 #import the module
 from spam import bacon
 	#don't need the module prefix but it makes it less readable
@@ -176,7 +143,6 @@ Extra credit: Look up the round() and abs() functions on the Internet, and find 
 They are both inbuilt functions, documentation for them is found here - https://docs.python.org/3/library/functions.html
 
 abs(startingNumber) will return the absolute value of a number
-
 
 round(startNumber, roundingNumber) will return the starting number rounded to the specified number
 
