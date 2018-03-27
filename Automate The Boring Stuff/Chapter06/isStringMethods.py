@@ -1,3 +1,4 @@
+# these are helpful for validating user input
 strings = ['8', '8.0', '8a', 'chars', '!@#', ' \t', 'Mr Jones']
 
 # check if these strings are something
