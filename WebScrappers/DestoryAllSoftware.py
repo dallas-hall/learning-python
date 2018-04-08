@@ -78,31 +78,49 @@ for i in range(len(catalogue_episode_counts)):
 # ### Download Files ###
 # *** Create Folders ***
 print('Creating download folders.')
+# change to the download directory and check if the base folder exists, create it if it doesn't
 os.chdir(download_path)
 if not os.path.exists(download_path + 'Destroy_All_Software'):
 	os.mkdir('Destroy_All_Software')
-os.chdir(download_path + 'Destroy_All_Software')
+base_download_path = download_path + 'Destroy_All_Software/'
+os.chdir(base_download_path)
 
-# need k, v here otherwise a tuple is returned
+# Go through all the key and value pairs. Need k, v here otherwise a tuple is returned
+# Check if the sub-folders exist, create them if not
 for k, v in season_episodes.items():
-	if not os.path.exists(download_path + 'Destroy_All_Software/' + re.sub('-', '_', str(k))):
-		os.mkdir(re.sub('-', '_', str(k)))
+	# use the key to create the download path
+	season_path = re.sub('-', '_', str(k))
+	print(season_path)
+	if not os.path.exists(season_path):
+		os.mkdir(season_path)
 
 # *** Get Files ***
+# go through each key which has the season names
 for k, v in season_episodes.items():
-	current_path = download_path + 'Destroy_All_Software/' + re.sub('-', '_', str(k))
-	os.chdir(current_path)
-	print('Current path is: ' + current_path)
+	season_path = re.sub('-', '_', str(k))
+	season_download_path = base_download_path + season_path
+	os.chdir(season_download_path)
+	print('Current path is: ' + season_download_path)
+	# go through each value pair which has the season episode urls
 	for i in range(len(v)):
+		# order the files using the websites order
 		if i < 10:
 			current_file_number = '0' + str(i + 1) + '-'
 		else:
 			current_file_number = str(i + 1) + '-'
+
+		# create the filename with numbered prefix
 		current_filename = current_file_number + re.sub('-', '_', re.sub(r'^.*/', '', str(v[i])) + '.mp4')
-		current_download_path = str(v[i]) + '/download?resolution=1080p'
-		print('Reading & downloading: ' + current_download_path)
-		response = requests.get(current_download_path)
+
+		# create the download rul
+		current_download_url = str(v[i]) + '/download?resolution=1080p'
+
+		# download the file and print some crap
+		print('Reading & downloading: ' + current_download_url)
+		response = requests.get(current_download_url)
 		print('Writing to file: ' + current_filename)
+
+		# save the file
 		current_file = open(current_filename, 'wb')
 		for chunk in response.iter_content(100000):
 			current_file.write(chunk)
