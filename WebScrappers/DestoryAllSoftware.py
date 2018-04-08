@@ -77,6 +77,7 @@ for i in range(len(catalogue_episode_counts)):
 
 # ### Download Files ###
 # *** Create Folders ***
+print('Creating download folders.')
 os.chdir(download_path)
 if not os.path.exists(download_path + 'Destroy_All_Software'):
 	os.mkdir('Destroy_All_Software')
@@ -84,16 +85,20 @@ os.chdir(download_path + 'Destroy_All_Software')
 
 # need k, v here otherwise a tuple is returned
 for k, v in season_episodes.items():
-	if not os.path.exists(download_path + 'Destroy_All_Software/' + str(k)):
-		os.mkdir(str(k))
+	if not os.path.exists(download_path + 'Destroy_All_Software/' + re.sub('-', '_', str(k))):
+		os.mkdir(re.sub('-', '_', str(k)))
 
 # *** Get Files ***
 for k, v in season_episodes.items():
-	print(download_path + 'Destroy_All_Software/' + str(k))
-	current_path = download_path + 'Destroy_All_Software/' + str(k)
+	current_path = download_path + 'Destroy_All_Software/' + re.sub('-', '_', str(k))
 	os.chdir(current_path)
+	print('Current path is: ' + current_path)
 	for i in range(len(v)):
-		current_filename = re.sub(r'^.*/', '', str(v[i])) + '.mp4'
+		if i < 10:
+			current_file_number = '0' + str(i + 1) + '-'
+		else:
+			current_file_number = str(i + 1) + '-'
+		current_filename = current_file_number + re.sub('-', '_', re.sub(r'^.*/', '', str(v[i])) + '.mp4')
 		current_download_path = str(v[i]) + '/download?resolution=1080p'
 		print('Reading & downloading: ' + current_download_path)
 		response = requests.get(current_download_path)
