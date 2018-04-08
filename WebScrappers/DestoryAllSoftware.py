@@ -1,5 +1,5 @@
 '''
-This script will connect to https://www.destroyallsoftware.com/screencasts/catalogue and get all of the links for each
+This script will connect to https://www.destroyallsoftware.com/screencasts/catalog and get all of the links for each
 season and then create a directory and download them.
 
 A lot of these concepts were taken from https://automatetheboringstuff.com/chapter11/
@@ -95,8 +95,7 @@ for k, v in season_episodes.items():
 	for i in range(len(v)):
 		current_filename = re.sub(r'^.*/', '', str(v[i])) + '.mp4'
 		current_download_path = str(v[i]) + '/download?resolution=1080p'
-		print('Reading: ' + str(v[i]))
-		print('Downloading: ' + current_download_path)
+		print('Reading & downloading: ' + current_download_path)
 		response = requests.get(current_download_path)
 		print('Writing to file: ' + current_filename)
 		current_file = open(current_filename, 'wb')
