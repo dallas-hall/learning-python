@@ -104,7 +104,7 @@ for k, v in season_episodes.items():
 	# go through each value pair which has the season episode urls
 	for i in range(len(v)):
 		# order the files using the websites order
-		if i < 10:
+		if i < 9:
 			current_file_number = '0' + str(i + 1) + '-'
 		else:
 			current_file_number = str(i + 1) + '-'
