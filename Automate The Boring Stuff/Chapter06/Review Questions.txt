@@ -1,0 +1,66 @@
+Practice Questions
+
+1. What are escape characters?
+
+Escape characters are characters that are used to tell the computer that the next character shouldn't be treated as a special character, just a normal character. In Python the escape character is \
+
+2. What do the \n and \t escape characters represent?
+
+Newline and tab, don't forget about \r which is carriage return.
+
+3. How can you put a \ backslash character in a string?
+
+Escape it with a backslash, so '\\' is a single backslash.
+
+4. The string value "Howl's Moving Castle" is a valid string. Why isn’t it a problem that the single quote character in the word Howl's isn’t escaped?
+
+Because the double quotes are encasing the string, you would need to escape the single quote if single quotes were encasing the string.
+
+5. If you don’t want to put \n in your string, how can you write a string with newlines in it?
+
+You can use a multi-line raw string. The syntax is:
+
+aString = '''This
+is
+a
+multi-line string.'''
+
+6. What do the following expressions evaluate to?
+
+    'Hello world!'[1] -> e
+
+    'Hello world!'[0:5] -> Hello
+
+    'Hello world!'[:5] -> Hello (because the 0 is implied)
+
+    'Hello world!'[3:] - > lo world! (because the end of the string is implied)
+
+7. What do the following expressions evaluate to?
+
+    'Hello'.upper() -> HELLO
+
+    'Hello'.upper().isupper() -> True
+
+    'Hello'.upper().lower() -> hello
+
+8. What do the following expressions evaluate to?
+
+    'Remember, remember, the fifth of November.'.split()
+['Remember,', 'remember,', 'the', 'fifth', 'of', 'November.'] because it splits using the whitespace characters.
+
+    '-'.join('There can be only one.'.split())
+There-can-be-only-one.
+
+9. What string methods can you use to right-justify, left-justify, and center a string?
+
+aString.rjust(n, paddingCharacter)
+aString.ljust(n, paddingCharacter)
+aString.center(n, paddingCharacter)
+
+Remember that the padding character is optional, space is default.
+
+10. How can you trim whitespace characters from the beginning or end of a string?
+
+aString.lstrip() for the left
+aString.rstrip() for the right
+aString.strip() for both sides
