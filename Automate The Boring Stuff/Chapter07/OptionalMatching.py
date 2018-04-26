@@ -7,13 +7,39 @@ match_object = regex.search('The adventures of Batman & Robin.')
 if match_object:
 	print(match_object.group())
 else:
-	print(regex + ' wasn\'t found.')
+	print(regex.pattern + ' wasn\'t found.')
 
 match_object = regex.search('The adventures of Wonder Woman & Batwoman.')
 if match_object:
 	print(match_object.group())
 else:
-	print(regex + ' wasn\'t found.')
+	print(regex.pattern + ' wasn\'t found.')
+
+match_object = regex.search('The adventures of Peter Rabbit.')
+if match_object:
+	print(match_object.group())
+else:
+	print(regex.pattern + ' wasn\'t found.')
+
+# same as above
+regex = re.compile(r'Bat(wo){0,1}man')
+match_object = regex.search('The adventures of Batman & Robin.')
+if match_object:
+	print(match_object.group())
+else:
+	print(regex.pattern + ' wasn\'t found.')
+
+match_object = regex.search('The adventures of Wonder Woman & Batwoman.')
+if match_object:
+	print(match_object.group())
+else:
+	print(regex.pattern + ' wasn\'t found.')
+
+match_object = regex.search('The adventures of Peter Rabbit.')
+if match_object:
+	print(match_object.group())
+else:
+	print(regex.pattern + ' wasn\'t found.')
 
 # 0:Many Match
 print("\n@@@ 0:Many Match @@@")
