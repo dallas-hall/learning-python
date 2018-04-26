@@ -23,7 +23,10 @@ print(match.group())
 # return all matches
 match = regex.findall(source_string)
 print(match)
-regex = re.compile(r'(\d{3})-\d{3}-\d{4}')
 # add a capture group to show how only the matches inside the capture group are returned.
+regex = re.compile(r'(\d{3})-\d{3}-\d{4}')
+match = regex.findall(source_string)
+print(match)
+regex = re.compile(r'(\d{3})-(\d{3})-(\d{4})')
 match = regex.findall(source_string)
 print(match)
