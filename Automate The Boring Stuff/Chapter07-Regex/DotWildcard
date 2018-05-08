@@ -1,0 +1,4 @@
+print('@@@ Dot Wildcard @@@')
+print('[INFO] This can be seen at https://www.regular-expressions.info/dot.html')
+print('. will match any character except for new lines.')
+print('. will match newlines if you use re.DOTALL')
