@@ -13,16 +13,16 @@ help@nostarch.com
 '''
 
 usPhoneRegex = re.compile(r'''(
-    (\d{3}|\(\d{3}\))?				# area code capture group
+    ^(\d{3}|\(\d{3}\))?				# area code capture group
     (\s|-|\.)?						# separator capture group
     (\d{3})							# first 3 digits capture group
     (\s|-|\.)						# separator capture group
     (\d{4})                         # last 4 digits capture group
     (\s*(ext|x|ext.)\s*(\d{2,5}))?	# extension capture group
-    )''', re.VERBOSE)
+    )''', re.VERBOSE | re.MULTILINE)
 
 auPhoneRegex = re.compile(r'''(
-	(\d{2}|\(\d{2}\))?				# area code capture group
+	^(\d{2}|\(\d{2}\))?				# area code capture group
 	(\s|-|\.)?						# separator capture group
 	(\d{2})							# a
 	(\s|-|\.)?						# separator capture group
@@ -30,7 +30,7 @@ auPhoneRegex = re.compile(r'''(
 	(\s|-|\.)?						# separator capture group
 	(\d{3})							# c
     (\s*(ext|x|ext.)\s*(\d{2,5}))?	# extension capture group
-	)''', re.VERBOSE)
+	)''', re.VERBOSE | re.MULTILINE)
 
 # https://www.regular-expressions.info/email.html
 emailRegex = re.compile(r'''(
