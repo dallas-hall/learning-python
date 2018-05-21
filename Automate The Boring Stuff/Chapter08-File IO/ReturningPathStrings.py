@@ -1,7 +1,7 @@
 import os
 
 path_only = str(os.getcwd())
-path_and_file = str(os.getcwd() + '/OSPathSupport.py')
+path_and_file = str(os.getcwd() + '/OsSafePathSupport.py')
 
 print('The current working directory is:\n' + path_only)
 print('\nPath without file returned via os.path.dirname() is:\n' + os.path.dirname(path_only))
