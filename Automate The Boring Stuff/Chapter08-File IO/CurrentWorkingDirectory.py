@@ -1,3 +1,3 @@
 import os
 
-print('pwd is : ' + os.getcwd())
+print('pwd is:\n' + os.getcwd())
