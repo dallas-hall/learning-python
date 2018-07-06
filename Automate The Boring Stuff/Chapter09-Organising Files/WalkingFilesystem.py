@@ -34,13 +34,13 @@ for i in range(3):
 		currentFile.close()
 		print(str(currentPath) + '/' + currentFilename)
 
-print('[INFO] Walking the filesystem tree at ' + sourcePath)
+print('[INFO] Walking the filesystem tree.')
 for folderName, subfolders, files in os.walk(str(sourcePath)):
 	print('The current folder is ' + folderName)
 
 	for subfolder in subfolders:
-		print('The current subfolder is ' + subfolder)
+		print('There is a subfolder called ' + subfolder)
 
 	for file in files:
-		print('The current file is ' + file)
+		print('There is a file called ' + file)
 
