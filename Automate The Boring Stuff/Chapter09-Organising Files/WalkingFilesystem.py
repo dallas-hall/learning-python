@@ -28,9 +28,19 @@ for i in range(3):
 	Path.mkdir(currentPath)
 	os.chdir(str(currentPath))
 	for j in range(3):
-		currentFilename = filename + str(j + 1)
+		currentFilename = directoryName + str(i + 1) + '_' + filename + str(j + 1)
 		currentFile = open(currentFilename, 'w')
 		currentFile.write(str(j) + '\n')
 		currentFile.close()
 		print(str(currentPath) + '/' + currentFilename)
+
+print('[INFO] Walking the filesystem tree at ' + sourcePath)
+for folderName, subfolders, files in os.walk(str(sourcePath)):
+	print('The current folder is ' + folderName)
+
+	for subfolder in subfolders:
+		print('The current subfolder is ' + subfolder)
+
+	for file in files:
+		print('The current file is ' + file)
 
