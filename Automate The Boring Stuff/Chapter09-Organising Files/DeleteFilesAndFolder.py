@@ -1,7 +1,7 @@
 #!/bin/python3
 
 from pathlib import Path
-import os
+import os, shutil
 
 print('[INFO] Creating directory.')
 newFolder = Path('my-folder/')
@@ -13,6 +13,7 @@ print(str(sourcePath))
 print('Done.')
 
 filenames = ['file1', 'file2', 'file3']
+foldernames = ['folder1', 'folder2', 'folder3']
 
 print('[INFO] Creating files.')
 for i in range(len(filenames)):
@@ -23,14 +24,14 @@ for i in range(len(filenames)):
 	currentFile.close()
 print('Done.')
 
-print('[INFO] Deleting files.')
-for currentFile in os.listdir(str(sourcePath)):
-	print(sourcePath / currentFile)
-	Path.unlink(sourcePath / currentFile)
-print('Done.')
+print('[INFO] Creating folders.')
+for i in range(len(foldernames)):
+	currentPath = sourcePath / foldernames[i]
+	print(currentPath)
+	Path.mkdir(currentPath)
 
-print('[INFO] Deleting directory.')
+print('[INFO] Deleting folder contents and folder.')
 print(str(sourcePath))
-# Must be empty
-Path.rmdir(sourcePath)
+# Delete everything inside and the folder itself.
+shutil.rmtree(sourcePath)
 print('Done.')
