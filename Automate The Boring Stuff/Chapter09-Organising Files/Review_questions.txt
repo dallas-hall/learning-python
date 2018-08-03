@@ -1,0 +1,19 @@
+1. What is the difference between shutil.copy() and shutil.copytree()?
+
+shutil.copy() will copy a single file. https://docs.python.org/3/library/shutil.html#shutil.copy
+shutil.copytree() will copy all files and subfoldiers recursively from the supplied path. https://docs.python.org/3/library/shutil.html#shutil.copytree
+
+2. What function is used to rename files?
+
+shutil.move() can rename files and folders by moving them. https://docs.python.org/3/library/shutil.html#shutil.move
+os.rename() can rename files and folders. https://docs.python.org/3/library/os.html#os.rename
+path.rename() can rename files and folders. https://docs.python.org/3.4/library/pathlib.html#pathlib.Path.rename
+
+3. What is the difference between the delete functions in the send2trash and shutil modules?
+
+send2trash sends the files to the recycling bin and shutil does not.
+
+4. ZipFile objects have a close() method just like File objects’ close() method. What ZipFile method is equivalent to File objects’ open() method?
+
+file_object.open(...) https://docs.python.org/3/library/functions.html#open
+zipefile.ZipeFile(...) https://docs.python.org/3/library/zipfile.html#zipfile.ZipFile
