@@ -1,4 +1,7 @@
 #!/bin/python
+# how to use https://stackoverflow.com/a/20749411
+
+
 def print_info(message):
 	print('[INFO] ' + message)
 
