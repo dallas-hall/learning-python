@@ -4,6 +4,38 @@ from PrintMessages import print_info, print_warning, print_debug, print_error
 from pathlib import Path
 debugging = True
 
+
+def byte_conversion(file_size_in_bytes):
+	if file_size_in_bytes < 1024:
+		calculated_file_size = file_size_in_bytes
+		calculated_file_size_unit = 'bytes'
+	# 1024 * 1024 = 1048576
+	elif file_size_in_bytes < 1048576:
+		calculated_file_size = file_size_in_bytes / 1024
+		calculated_file_size_unit = 'KiB'
+	# 1024 * 1024 * 1024 = 1073741824
+	elif file_size_in_bytes < 1073741824:
+		calculated_file_size = file_size_in_bytes / 1024 / 1024
+		calculated_file_size_unit = 'MiB'
+	else:
+		calculated_file_size = file_size_in_bytes / 1024 / 1024 / 1024
+		calculated_file_size_unit = 'GiB'
+	#print_debug('The current file called ' + file + ' has a size of ' + str(calculated_file_size) + ' ' + calculated_file_size_unit)
+	return [calculated_file_size, calculated_file_size_unit]
+
+
+def kib_to_byte(kib_amount):
+	return int(kib_amount) * 1024
+
+
+def mib_to_byte(mib_amount):
+	return int(mib_amount) * 1024 * 1024
+
+
+def gib_to_byte(gib_amount):
+	return int(gib_amount) * 1024 * 1024 * 1024
+
+
 print('Enter the path to work in.')
 work_path = input()
 if not Path.exists(Path.cwd() / work_path):
@@ -79,23 +111,37 @@ for folderName, subfolders, files in os.walk(str(work_path)):
 		print('There is a subfolder called ' + subfolder)
 	for file in files:
 		current_file_size_bytes = os.path.getsize(file)
+		byte_conversion(current_file_size_bytes)
 
-		if current_file_size_bytes < 1024:
-			current_file_size = current_file_size_bytes
-			expanded_file_size_unit = 'bytes'
-		# 1024 * 1024 = 1048576
-		elif current_file_size_bytes < 1048576:
-			current_file_size = current_file_size_bytes / 1024
-			expanded_file_size_unit = 'KiB'
-		# 1024 * 1024 * 1024 = 1073741824
-		elif current_file_size_bytes < 1073741824:
-			current_file_size = current_file_size_bytes / 1024 / 1024
-			expanded_file_size_unit = 'MiB'
-		else:
-			current_file_size = current_file_size_bytes / 1024 / 1024 / 1024
-			expanded_file_size_unit = 'GiB'
-		print_debug('The current file called ' + file + ' has a size of ' + str(current_file_size) + ' ' + expanded_file_size_unit)
 
+while True:
+	print('Enter file size threshold. All files greater than or equal to this will be deleted.\nNote that the previous file unit size will be used.')
+	file_size_threshold = input()
+	if not file_size_threshold.isdigit():
+		print_error('Invalid input, enter integers only.')
+	else:
+		break
+
+print_info('Deleting files greater than or equal to the supplied threshold of ' + file_size_threshold + ' ' + file_size_unit)
+if file_size_unit == 'K':
+	byte_threshold = kib_to_byte(file_size_threshold)
+elif file_size_unit == 'M':
+	byte_threshold = mib_to_byte(file_size_threshold)
+elif file_size_unit == 'G':
+	byte_threshold = gib_to_byte(file_size_threshold)
+else:
+	byte_threshold = file_size_threshold
+print_debug(str(byte_threshold))
+for folderName, subfolders, files in os.walk(str(work_path)):
+	print('The current folder is ' + folderName)
+	for subfolder in subfolders:
+		print('There is a subfolder called ' + subfolder)
+	for file in files:
+		current_file_size_bytes = os.path.getsize(file)
+		current_file_converted = byte_conversion(current_file_size_bytes)
+		if current_file_size_bytes >= int(byte_threshold):
+			print_debug('The file ' + file + ' sized ' + str(current_file_converted[0]) + ' ' + str(current_file_converted[1]) + ' will be deleted.\nBecause it is greater than or equal to ' + str(file_size_threshold) + ' ' + file_size_unit)
+			Path.unlink(Path(file))
 
 #print_info('Deleting root path and all files and folders of:\n' + str(work_path))
 #shutil.rmtree(str(work_path))
