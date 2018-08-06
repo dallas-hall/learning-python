@@ -7,6 +7,7 @@ def create_files_full(path, amount):
 	if not check_folder_exists(path):
 		create_folder(path)
 		change_folder(path)
+	path = get_absolute_path(path)
 	print_info('Creating FULL files at:\n' + path)
 	for i in range(1, amount + 1):
 		filename = 'tmp_file' + str(i)
@@ -20,6 +21,7 @@ def create_files_even(path, amount):
 	if not check_folder_exists(path):
 		create_folder(path)
 		change_folder(path)
+	path = get_absolute_path(path)
 	print_info('Creating EVEN files at:\n' + path)
 	for i in range(1, amount + 1):
 		if i % 2 == 0:
@@ -34,6 +36,7 @@ def create_files_odd(path, amount):
 	if not check_folder_exists(path):
 		create_folder(path)
 		change_folder(path)
+	path = get_absolute_path(path)
 	print_info('Creating ODD files at:\n' + path)
 	for i in range(1, amount + 1):
 		if i % 2 != 0:
@@ -62,6 +65,13 @@ def change_folder(path):
 		os.chdir(os.getcwd() + '/' + path)
 
 
+def get_absolute_path(path):
+	if Path.is_absolute(Path(path)):
+		return path
+	else:
+		return os.getcwd() + '/' + path
+
+
 def cleanup(path):
 	if not Path.is_absolute(Path(path)):
 		print_error("Supplied path must be absolute.")
@@ -76,10 +86,11 @@ def cleanup(path):
 
 relative_path = 'fill'
 absolute_path = os.getcwd() + '/' + relative_path
-create_files_full(absolute_path, 5)
-#create_files_even(relative_path, 5)
+#create_files_full(absolute_path, 5)
+create_files_even(relative_path, 5)
+#create_files_odd(relative_path, 5)
 cleanup(relative_path)
 cleanup(absolute_path)
-#create_files_odd(relative_path, 5)
+
 
 
