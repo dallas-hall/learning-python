@@ -3,7 +3,7 @@ from pathlib import Path
 from PrintMessages import print_debug, print_info, print_error, print_warning
 
 
-def create_files(path, amount, no_filename_gaps):
+def create_initial_files(path, amount, no_filename_gaps):
 	print(path)
 	if not check_folder_exists(path):
 		if not Path.is_absolute(Path(path)):
@@ -16,8 +16,9 @@ def create_files(path, amount, no_filename_gaps):
 	print_info('create_files_even using\n' + str(path))
 	prn = random.randint(1, 100)
 	for i in range(1, amount + 1):
-		filename = 'tmp_file' + str(i)
-		content = str(path) + '/' + filename
+		filename_and_content = get_filename_and_content(str(path), i)
+		filename = filename_and_content[1]
+		content = filename_and_content[0]
 
 		if no_filename_gaps:
 			print_debug('create_files - No filename gaps.')
@@ -36,7 +37,13 @@ def create_files(path, amount, no_filename_gaps):
 					write_file(filename, content)
 
 
+def get_filename_and_content(path, number):
+	filename = 'tmp_file' + str(number)
+	return ['Saved file at ' + path + '/' + filename, filename]
+
+
 def write_file(filename, content):
+	print_debug('write_file - ' + filename)
 	current_file = open(filename, 'w')
 	current_file.write(str(content))
 	current_file.close()
@@ -116,17 +123,26 @@ def fill_in_file_gaps_with_insert(path, number):
 	print(files_found)
 	files_found.sort()
 	print(files_found)
+	for i in range(1, number + 1):
+		filename_and_content = get_filename_and_content(str(path), i)
+		filename = filename_and_content[1]
+		content = filename_and_content[0]
+		if filename not in files_found:
+			write_file(filename, content)
+
+
 
 def fill_in_file_gaps_with_reorder(path):
 	return None
 
+
 runtime_path = Path.cwd()
 relative_path = 'fill'
 absolute_path = get_absolute_path(relative_path)
-#create_files_full(absolute_path, 5)
-create_files(relative_path, 5, False)
-#create_files(absolute_path, 5, False)
-#create_files(absolute_path, 5, True)
+#create_initial_files(absolute_path, 5)
+create_initial_files(relative_path, 5, False)
+#create_initial_files(absolute_path, 5, False)
+#create_initial_files(absolute_path, 5, True)
 fill_in_file_gaps_with_insert(relative_path, 5)
 #fill_in_file_gaps_with_insert(absolute_path, 5)
 cleanup(relative_path)
