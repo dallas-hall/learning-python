@@ -9,16 +9,15 @@ def create_initial_files(path, amount, no_filename_gaps):
 		if not Path.is_absolute(Path(path)):
 			path = get_absolute_path(path)
 		create_folder(path)
-		change_folder(path)
 	else:
 		if not Path.is_absolute(Path(path)):
 			path = get_absolute_path(path)
 	print_info('create_files_even using\n' + str(path))
+	change_folder(path)
 	prn = random.randint(1, 100)
 	for i in range(1, amount + 1):
-		filename_and_content = get_filename_and_content(str(path), i)
-		filename = filename_and_content[1]
-		content = filename_and_content[0]
+		filename = get_filename(i)
+		content = get_file_content(path, filename)
 
 		if no_filename_gaps:
 			print_debug('create_files - No filename gaps.')
@@ -37,9 +36,12 @@ def create_initial_files(path, amount, no_filename_gaps):
 					write_file(filename, content)
 
 
-def get_filename_and_content(path, number):
-	filename = 'tmp_file' + str(number)
-	return ['Saved file at ' + path + '/' + filename, filename]
+def get_filename(number):
+	return 'tmp_file' + str(number)
+
+
+def get_file_content(path, filename):
+	return 'Saved file at ' + str(path) + '/' + str(filename)
 
 
 def write_file(filename, content):
@@ -53,7 +55,6 @@ def check_folder_exists(path):
 	if not Path.is_absolute(Path(path)):
 		path = get_absolute_path(path)
 		print_debug('check_folder_exists - Converted to absolute path using')
-		print(path)
 	if Path.exists(Path(path)):
 		return True
 	else:
@@ -61,13 +62,16 @@ def check_folder_exists(path):
 
 
 def create_folder(path):
-	if Path.is_absolute(Path(path)):
-		Path.mkdir(Path(path))
+	if check_folder_exists(path):
+		print_warning('create_folder - Folder already exists, nothing done. ')
 	else:
-		path = get_absolute_path(path)
-		Path.mkdir(path)
-	print_debug('create_folder using')
-	print(str(path))
+		if Path.is_absolute(Path(path)):
+			Path.mkdir(Path(path))
+		else:
+			path = get_absolute_path(path)
+			Path.mkdir(path)
+		print_debug('create_folder using')
+		print(str(path))
 
 
 def change_folder(path):
@@ -101,7 +105,7 @@ def cleanup(path):
 		return False
 
 
-def fill_in_file_gaps_with_insert(path, number):
+def remove_file_gaps(path, number, use_insert):
 	if not Path.is_absolute(Path(path)):
 		path = get_absolute_path(path)
 	if not (check_folder_exists(path)):
@@ -124,16 +128,17 @@ def fill_in_file_gaps_with_insert(path, number):
 	files_found.sort()
 	print(files_found)
 	for i in range(1, number + 1):
-		filename_and_content = get_filename_and_content(str(path), i)
-		filename = filename_and_content[1]
-		content = filename_and_content[0]
+		filename = get_filename(i)
+		content = get_file_content(path, filename)
 		if filename not in files_found:
-			write_file(filename, content)
-
-
-
-def fill_in_file_gaps_with_reorder(path):
-	return None
+			if use_insert:
+				write_file(filename, content)
+			else:
+				new_filename = get_filename(i - 1)
+				if Path.exists(path / filename):
+					print('Reorder goes here as ' + filename + ' not found.')
+					print('Rename ' + filename + ' to ' + new_filename)
+					#Path(path / filename).rename(new_filename)
 
 
 runtime_path = Path.cwd()
@@ -143,9 +148,9 @@ absolute_path = get_absolute_path(relative_path)
 create_initial_files(relative_path, 5, False)
 #create_initial_files(absolute_path, 5, False)
 #create_initial_files(absolute_path, 5, True)
-fill_in_file_gaps_with_insert(relative_path, 5)
-#fill_in_file_gaps_with_insert(absolute_path, 5)
-cleanup(relative_path)
+#remove_file_gaps(relative_path, 5, True)
+remove_file_gaps(absolute_path, 5, False)
+#cleanup(relative_path)
 #cleanup(absolute_path)
 
 
