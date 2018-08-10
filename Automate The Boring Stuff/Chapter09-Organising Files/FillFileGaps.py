@@ -127,18 +127,23 @@ def remove_file_gaps(path, number, use_insert):
 	print(files_found)
 	files_found.sort()
 	print(files_found)
-	for i in range(1, number + 1):
+	i = 1
+	while i < number + 1:
 		filename = get_filename(i)
 		content = get_file_content(path, filename)
-		if filename not in files_found:
-			if use_insert:
-				write_file(filename, content)
-			else:
-				new_filename = get_filename(i - 1)
-				if Path.exists(path / filename):
-					print('Reorder goes here as ' + filename + ' not found.')
-					print('Rename ' + filename + ' to ' + new_filename)
-					#Path(path / filename).rename(new_filename)
+		if filename not in files_found and use_insert:
+			write_file(filename, content)
+			i += 1
+			# else:
+			# 	new_filename = get_filename(i - 1)
+			# 	if Path.exists(path / filename):
+			# 		print('Reorder goes here as ' + filename + ' not found.')
+			# 		print('Rename ' + filename + ' to ' + new_filename)
+			# 		#Path(path / filename).rename(new_filename)
+			# 		i -= i
+		else:
+			i += 1
+
 
 
 runtime_path = Path.cwd()
@@ -149,7 +154,7 @@ create_initial_files(relative_path, 5, False)
 #create_initial_files(absolute_path, 5, False)
 #create_initial_files(absolute_path, 5, True)
 #remove_file_gaps(relative_path, 5, True)
-remove_file_gaps(absolute_path, 5, False)
+remove_file_gaps(absolute_path, 5, True)
 #cleanup(relative_path)
 #cleanup(absolute_path)
 
