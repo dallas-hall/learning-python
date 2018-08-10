@@ -128,21 +128,40 @@ def remove_file_gaps(path, number, use_insert):
 	files_found.sort()
 	print(files_found)
 	i = 1
+	files_processed = 0
 	while i < number + 1:
 		filename = get_filename(i)
+		# Skip if the current file exists
+		if Path.exists(path / filename):
+			i += 1
+			continue
 		content = get_file_content(path, filename)
+		# When in insert mode, just add the files to fill in the gaps
 		if filename not in files_found and use_insert:
 			write_file(filename, content)
+			files_processed += 1
 			i += 1
-			# else:
-			# 	new_filename = get_filename(i - 1)
-			# 	if Path.exists(path / filename):
-			# 		print('Reorder goes here as ' + filename + ' not found.')
-			# 		print('Rename ' + filename + ' to ' + new_filename)
-			# 		#Path(path / filename).rename(new_filename)
-			# 		i -= i
+		# When in move move, move the next file to the missing file.
+		elif filename not in files_found and not use_insert:
+			j = i + 1
+			# Check for files that are more than 1 number apart.
+			while True:
+				file_to_rename = get_filename(j)
+				if not Path.exists(path / file_to_rename):
+					j += 1
+				else:
+					break
+			print('Reorder goes here as ' + filename + ' not found.')
+			print('Rename ' + file_to_rename + ' to ' + filename)
+			Path(path / file_to_rename).rename(filename)
+			files_found = os.listdir(path)
+			files_processed += 1
+			i += 1
 		else:
 			i += 1
+		# Exit processing because all files were processed
+		if files_processed == len(files_found):
+			break
 
 
 
@@ -154,9 +173,9 @@ create_initial_files(relative_path, 5, False)
 #create_initial_files(absolute_path, 5, False)
 #create_initial_files(absolute_path, 5, True)
 #remove_file_gaps(relative_path, 5, True)
-remove_file_gaps(absolute_path, 5, True)
+remove_file_gaps(absolute_path, 5, False)
 #cleanup(relative_path)
-#cleanup(absolute_path)
+cleanup(absolute_path)
 
 
 
