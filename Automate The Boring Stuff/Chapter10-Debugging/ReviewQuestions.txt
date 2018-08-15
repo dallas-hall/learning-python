@@ -1,0 +1,40 @@
+1. Write an assert statement that triggers an AssertionError if the variable spam is an integer less than 10.
+
+spam = 9
+assert spam > 10, AssertionError('This is the AssertionError message.')
+
+2. Write an assert statement that triggers an AssertionError if the variables eggs and bacon contain strings that are the same as each other, even if their cases are different (that is, 'hello' and 'hello' are considered the same, and 'goodbye' and 'GOODbye' are also considered the same).
+
+string1 = 'HELLO'
+string2 = 'heLLo'
+# Use .casefold to check strings using codepoints https://stackoverflow.com/a/40551443
+assert string1.casefold() != string2.casefold(), AssertionError('The strings are equal either case sensitive or insensitive.')
+
+3. Write an assert statement that always triggers an AssertionError.
+
+assert False, AssertionError('Always tripped.')
+
+4. What are the two lines that your program must have in order to be able to call logging.debug()?
+
+import logging
+logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - [%(levelname)s] - %(message)s')
+logging.debug('This is a debug log message.')
+
+5. What are the two lines that your program must have in order to have logging.debug() send a logging message to a file named programLog.txt?
+
+import logging
+logging.basicConfig(filename='log_file.txt', level=logging.DEBUG, format=' %(asctime)s - [%(levelname)s] - %(message)s')
+logging.debug('This is a debug log message.')
+
+6. What are the five logging levels?
+
+debug, info, warning, error, critical.
+
+7. What line of code can you add to disable all logging messages in your program?
+
+# Disables all logging at and below the specified level.
+logging.disable(logging.CRITICAL)
+
+8. Why is using logging messages better than using print() to display the same message?
+
+Because you can disable it quickly and easily.
