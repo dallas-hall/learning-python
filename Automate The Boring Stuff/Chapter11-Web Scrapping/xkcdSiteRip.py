@@ -50,21 +50,37 @@ def change_folder(path):
 	logging.debug('change_folder using\n' + str(path))
 
 
+def get_number_prefix(n):
+	r = int(re.sub(regex_remove_slash, '', n))
+	if r >= 1 and r <= 9:
+		return '0000' + str(r)
+	elif r >= 10 and r <= 99:
+		return '000' + str(r)
+	elif r >= 100 and r <= 999:
+		return '00' + str(r)
+	elif r >= 1000 and r <= 9999:
+		return '0' + str(r)
+	else:
+		return str(r)
+
 # Setup variables
 runtime_path = Path.cwd()
 relative_path = 'xkcd'
 absolute_path = get_absolute_path(relative_path)
 start_url = 'https://xkcd.com'
-url = start_url
+next_comic_number = '/1/'
+url = start_url + next_comic_number
 regex_match_non_filename = re.compile(r'^.*/')
-metadata_file = 'comics.txt'
+metadata_file = 'comics_metadata.txt'
+regex_remove_slash = re.compile(r'/+')
+
 
 # Setup file I/O
 if not check_folder_exists(absolute_path):
 	create_folder(absolute_path)
 change_folder(absolute_path)
 file = open(str(absolute_path) + '/' + metadata_file, 'w')
-file.write('Downloading all comics from ' + start_url + ' @ ' + str(datetime.datetime.now()).split('.')[0] + '\n')
+file.write('Downloading all comics from ' + url + ' @ ' + str(datetime.datetime.now()).split('.')[0] + '\n')
 file.close()
 
 # xkcd start and ending urls end with #
@@ -84,7 +100,8 @@ while not url.endswith('#'):
 
 	# Download the comic
 	current_comic = html.select('#comic img')
-	current_comic_filename = re.sub(regex_match_non_filename, '', current_comic[0].get('src'))
+	current_file_number_prefix = get_number_prefix(next_comic_number)
+	current_comic_filename = current_file_number_prefix + '_' + re.sub(r'_\(.*\)', '', re.sub(regex_match_non_filename, '', current_comic[0].get('src')))
 	logging.debug('Current filename:\n' + current_comic_filename)
 	current_comic_url = 'https:' + current_comic[0].get('src')
 	logging.debug('Current URL:\n' + current_comic_url)
@@ -103,14 +120,17 @@ while not url.endswith('#'):
 	download_file.close()
 	logging.info(current_comic_filename + ' downloaded.')
 
-	# Get the previous comic
-	back_button = html.select('#middleContainer .comicNav li a')
-	url = start_url + back_button[1].get('href')
-	logging.debug('Previous URL:\n' + url)
+	# Get the next comic
+	next_comic_number = html.select('#middleContainer .comicNav li a')[3].get('href')
+	url = start_url + next_comic_number
+	logging.debug('Next URL:\n' + url)
+
+	# TODO: check for non-pictures - https://xkcd.com/1350/ is a problem because it isn't a picture
 
 	# Write metadata
+	current_comic_number = int(re.sub(r'/', '', next_comic_number)) - 1
 	file = open(str(absolute_path) + '/' + metadata_file, 'a')
-	file.write('\nDownloaded ' + current_comic_filename + ' from ' + current_comic_url)
+	file.write('\nDownloaded comic number ' + str(current_comic_number) + ' named ' + current_comic_filename + ' from ' + current_comic_url)
 	file.close()
 
 	#url = '#'
