@@ -63,12 +63,17 @@ def get_number_prefix(n):
 	else:
 		return str(r)
 
+def write_to_file(path, write_mode, message):
+	file = open(path, write_mode)
+	file.write(message)
+	file.close()
+
 # Setup variables
 runtime_path = Path.cwd()
 relative_path = 'xkcd'
 absolute_path = get_absolute_path(relative_path)
 start_url = 'https://xkcd.com'
-next_comic_number = '/1/'
+next_comic_number = '/1/' # 1350 is the first comic that isn't a PNG file
 url = start_url + next_comic_number
 regex_match_non_filename = re.compile(r'^.*/')
 metadata_file = 'comics_metadata.txt'
@@ -79,9 +84,7 @@ regex_remove_slash = re.compile(r'/+')
 if not check_folder_exists(absolute_path):
 	create_folder(absolute_path)
 change_folder(absolute_path)
-file = open(str(absolute_path) + '/' + metadata_file, 'w')
-file.write('Downloading all comics from ' + url + ' @ ' + str(datetime.datetime.now()).split('.')[0] + '\n')
-file.close()
+write_to_file(str(absolute_path) + '/' + metadata_file, 'w', 'Downloading all comics from ' + url + ' @ ' + str(datetime.datetime.now()).split('.')[0] + '\n')
 
 # xkcd start and ending urls end with #
 while not url.endswith('#'):
@@ -100,6 +103,18 @@ while not url.endswith('#'):
 
 	# Download the comic
 	current_comic = html.select('#comic img')
+	# Skip if it ins't an image file, some xkcd comics are not images.
+	if len(current_comic) == 0:
+		current_comic_number = re.sub(r'https://xkcd.com', '', url)
+		current_comic_number_no_slashes = re.sub(r'/', '', current_comic_number)
+		write_to_file(
+			str(absolute_path) + '/' + metadata_file
+			,'a'
+			,'\nComic number ' + current_comic_number_no_slashes + ' not downloaded as it wasn\'t an image file.'
+		)
+		url = start_url + '/' + str(int(current_comic_number_no_slashes) + 1) + '/'
+		continue
+
 	current_file_number_prefix = get_number_prefix(next_comic_number)
 	current_comic_filename = current_file_number_prefix + '_' + re.sub(r'_\(.*\)', '', re.sub(regex_match_non_filename, '', current_comic[0].get('src')))
 	logging.debug('Current filename:\n' + current_comic_filename)
@@ -129,9 +144,7 @@ while not url.endswith('#'):
 
 	# Write metadata
 	current_comic_number = int(re.sub(r'/', '', next_comic_number)) - 1
-	file = open(str(absolute_path) + '/' + metadata_file, 'a')
-	file.write('\nDownloaded comic number ' + str(current_comic_number) + ' named ' + current_comic_filename + ' from ' + current_comic_url)
-	file.close()
+	write_to_file(str(absolute_path) + '/' + metadata_file, 'a',  '\nDownloaded comic number ' + str(current_comic_number) + ' named ' + current_comic_filename + ' from ' + current_comic_url)
 
 	#url = '#'
 
