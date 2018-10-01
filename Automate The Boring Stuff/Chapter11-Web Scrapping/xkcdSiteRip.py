@@ -63,22 +63,24 @@ def get_number_prefix(n):
 	else:
 		return str(r)
 
+
 def write_to_file(path, write_mode, message):
 	file = open(path, write_mode)
 	file.write(message)
 	file.close()
+
 
 # Setup variables
 runtime_path = Path.cwd()
 relative_path = 'xkcd'
 absolute_path = get_absolute_path(relative_path)
 start_url = 'https://xkcd.com'
-next_comic_number = '/1/' # 1350 is the first comic that isn't a PNG file
+next_comic_number = '/1525/' # 1350 is the first comic that isn't a PNG file, so is 1525
 url = start_url + next_comic_number
 regex_match_non_filename = re.compile(r'^.*/')
 metadata_file = 'comics_metadata.txt'
 regex_remove_slash = re.compile(r'/+')
-
+regex_url_match = re.compile('.*xkcd\.com.*')
 
 # Setup file I/O
 if not check_folder_exists(absolute_path):
@@ -119,6 +121,12 @@ while not url.endswith('#'):
 	current_comic_filename = current_file_number_prefix + '_' + re.sub(r'_\(.*\)', '', re.sub(regex_match_non_filename, '', current_comic[0].get('src')))
 	logging.debug('Current filename:\n' + current_comic_filename)
 	current_comic_url = 'https:' + current_comic[0].get('src')
+	if current_comic_url is None or current_comic_url == '' or not regex_url_match.match(current_comic_url):
+		next_comic_number = '/' + str(int(current_file_number_prefix) + 1) + '/'
+		write_to_file(str(absolute_path) + '/' + metadata_file, 'a', '\nDid not download comic number ' + current_file_number_prefix + ' named ' + current_comic_filename + ' from ' + current_comic_url)
+
+		url = start_url + next_comic_number
+		continue
 	logging.debug('Current URL:\n' + current_comic_url)
 	response = requests.get(current_comic_url)
 	try:
@@ -140,12 +148,8 @@ while not url.endswith('#'):
 	url = start_url + next_comic_number
 	logging.debug('Next URL:\n' + url)
 
-	# TODO: check for non-pictures - https://xkcd.com/1350/ is a problem because it isn't a picture
-
 	# Write metadata
 	current_comic_number = int(re.sub(r'/', '', next_comic_number)) - 1
 	write_to_file(str(absolute_path) + '/' + metadata_file, 'a',  '\nDownloaded comic number ' + str(current_comic_number) + ' named ' + current_comic_filename + ' from ' + current_comic_url)
-
-	#url = '#'
 
 logging.info('Exiting xkcdSiteRip.py - all comics downloaded.')
