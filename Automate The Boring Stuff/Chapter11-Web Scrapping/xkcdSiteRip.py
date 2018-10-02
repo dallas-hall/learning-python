@@ -75,7 +75,7 @@ runtime_path = Path.cwd()
 relative_path = 'xkcd'
 absolute_path = get_absolute_path(relative_path)
 start_url = 'https://xkcd.com'
-next_comic_number = '/1525/' # 1350 is the first comic that isn't a PNG file, so is 1525
+next_comic_number = '/1/' # 1350 is the first comic that isn't a PNG file, so is 1525
 url = start_url + next_comic_number
 regex_match_non_filename = re.compile(r'^.*/')
 metadata_file = 'comics_metadata.txt'
@@ -88,8 +88,7 @@ if not check_folder_exists(absolute_path):
 change_folder(absolute_path)
 write_to_file(str(absolute_path) + '/' + metadata_file, 'w', 'Downloading all comics from ' + url + ' @ ' + str(datetime.datetime.now()).split('.')[0] + '\n')
 
-# xkcd start and ending urls end with #
-while not url.endswith('#'):
+while True:
 	# Connect to website & check response code
 	response = requests.get(url)
 	try:
@@ -146,10 +145,13 @@ while not url.endswith('#'):
 	# Get the next comic
 	next_comic_number = html.select('#middleContainer .comicNav li a')[3].get('href')
 	url = start_url + next_comic_number
+	# xkcd start and ending urls end with #
+	if url.endswith('#'):
+		break
 	logging.debug('Next URL:\n' + url)
 
 	# Write metadata
 	current_comic_number = int(re.sub(r'/', '', next_comic_number)) - 1
 	write_to_file(str(absolute_path) + '/' + metadata_file, 'a',  '\nDownloaded comic number ' + str(current_comic_number) + ' named ' + current_comic_filename + ' from ' + current_comic_url)
 
-logging.info('Exiting xkcdSiteRip.py - all comics downloaded.')
+logging.info('Exiting xkcdSiteRip.py - all comics with valid images downloaded.')
