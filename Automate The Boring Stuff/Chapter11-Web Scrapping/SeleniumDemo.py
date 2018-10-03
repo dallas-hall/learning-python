@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
-import logging
+import logging, time
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 
 # Define logging
 logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - [%(levelname)s] - %(message)s')
@@ -25,3 +26,10 @@ except:
 logging.debug('Clicking an element on the page.')
 linkElem = browser.find_element_by_link_text('Cracking Codes with Python')
 linkElem.click() # follows the "Read It Online" link
+time.sleep(2)
+
+logging.debug('Sending special keys.')
+html = browser.find_element_by_tag_name('html')
+html.send_keys(Keys.END)
+time.sleep(2)
+html.send_keys(Keys.HOME)
