@@ -1,0 +1,100 @@
+1. Briefly describe the differences between the webbrowser, requests, BeautifulSoup, and selenium modules.
+
+webbrowser comes with Python and opens the system's default browser to a specific page.
+requests comes with Python and can be used to download files.
+BeautifulSoup is a module that can parse HTML
+selenium is a module that uses geckodriver to spawn a specified web browser is able to control the pages within that browser.
+
+2. What type of object is returned by requests.get()? How can you access the downloaded content as a string value?
+
+It returns a Response object and you can get the string value from that object assigning that Response object to a variable and calling methods on it.
+
+import requests
+result = requests.get(url)
+print(result.text[:])
+
+3. What Requests method checks that the download worked?
+
+import requests
+result = requests.get(url)
+try:
+    result.raise_for_status()
+except Exception as exc:
+    print('There was a problem: %s' % (exc))
+
+4. How can you get the HTTP status code of a Requests response?
+
+import requests
+result = requests.get(url)
+result.status_code
+
+5. How do you save a Requests response to a file?
+
+import requests
+result = requests.get(url)
+try:
+    result.raise_for_status()
+except Exception as exc:
+    print('There was a problem: %s' % (exc))
+file = open(filePath, 'wb')
+for chunk in res.iter_content(100000):
+    file.write(chunk)
+file.close()
+
+6. What is the keyboard shortcut for opening a browser’s developer tools?
+
+Firefox = ctrl + shift + i
+
+7. How can you view (in the developer tools) the HTML of a specific element on a web page?
+
+Right click and inspect element. Or open developer mode and find the element you want.
+
+8. What is the CSS selector string that would find the element with an id attribute of main?
+
+#main
+
+9. What is the CSS selector string that would find the elements with a CSS class of highlight?
+
+.highlight
+
+10. What is the CSS selector string that would find all the <div> elements inside another <div> element?
+
+div, div
+
+11. What is the CSS selector string that would find the <button> element with a value attribute set to favorite?
+
+input[type="button"]
+
+12. Say you have a Beautiful Soup Tag object stored in the variable spam for the element <div>Hello world!</div>. How could you get a string 'Hello world!' from the Tag object?
+
+spam.getText()
+
+13. How would you store all the attributes of a Beautiful Soup Tag object in a variable named linkElem?
+
+linkElem = bsObject.attrs
+
+14. Running import selenium doesn’t work. How do you properly import the selenium module?
+
+Install selenium with pip and then add
+from selenium import webdriver
+
+15. What’s the difference between the find_element_* and find_elements_* methods?
+
+find_element_* returns the first element found
+find_elements_* returns a list of all elements found
+
+16. What methods do Selenium’s WebElement objects have for simulating mouse clicks and keyboard keys?
+
+object.click() or object.submit()
+object.send_keys('keys to send here')
+object.send_keys(Keys.SPECIAL_KEY_CODE_HERE)
+
+17. You could call send_keys(Keys.ENTER) on the Submit button’s WebElement object, but what is an easier way to submit a form with Selenium?
+
+object.click() or object.submit()
+
+18. How can you simulate clicking a browser’s Forward, Back, and Refresh buttons with Selenium?
+
+object.forward()
+object.back()
+object.refresh()
