@@ -10,6 +10,7 @@ worksheet = workbook.active
 for i in range(1, 8):
 	print(i, worksheet.cell(row=i, column=2).value)
 
-for i in range(1, 8):
-	for j in range(1, 4):
+# Need plus 1 here otherwise the last row / column is missed.
+for i in range(1, worksheet.max_row + 1):
+	for j in range(1, worksheet.max_column + 1):
 		print(str(i) + ',' + str(j), worksheet.cell(row=i, column=j).value)
