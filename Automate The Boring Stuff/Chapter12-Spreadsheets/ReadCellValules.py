@@ -6,13 +6,19 @@ workbook = load_workbook('../Examples/example.xlsx')
 
 # https://openpyxl.readthedocs.io/en/stable/usage.html#read-an-existing-workbook
 worksheet = workbook.active
+print('The value at ' + worksheet['A1'].coordinate + ' is')
 print(worksheet['A1'].value)
+print('The format at ' + worksheet['A1'].coordinate + ' is')
 print(worksheet['A1'].number_format)
-
+print()
+print('The value at ' + worksheet['B1'].coordinate + ' is')
 print(worksheet['B1'].value)
+print('The format at ' + worksheet['B1'].coordinate + ' is')
 print(worksheet['B1'].number_format)
-
+print()
+print('The value at ' + worksheet['C1'].coordinate + ' is')
 print(worksheet['C1'].value)
+print('The format at ' + worksheet['C1'].coordinate + ' is')
 print(worksheet['C1'].number_format)
 
 
