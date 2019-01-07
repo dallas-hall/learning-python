@@ -6,7 +6,7 @@ workbook = load_workbook('../Examples/example.xlsx')
 
 # https://openpyxl.readthedocs.io/en/stable/usage.html#read-an-existing-workbook
 #worksheet = workbook.active
-worksheet = workbook.get_sheet_by_name('Sheet1')
+worksheet = workbook['Sheet1']
 
 # Dates are automatically interpreted and returned as a datetime rather than a string.
 print('The value at ' + worksheet['A1'].coordinate + ' is')
