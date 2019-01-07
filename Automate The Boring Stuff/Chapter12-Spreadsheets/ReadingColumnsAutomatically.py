@@ -5,7 +5,8 @@ from openpyxl import load_workbook
 workbook = load_workbook('../Examples/example.xlsx')
 
 # https://openpyxl.readthedocs.io/en/stable/usage.html#read-an-existing-workbook
-worksheet = workbook.active
+#worksheet = workbook.active
+worksheet = workbook['Sheet1']
 
 for i in range(1, 8):
 	print(i, worksheet.cell(row=i, column=2).value)
