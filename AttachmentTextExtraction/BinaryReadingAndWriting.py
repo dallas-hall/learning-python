@@ -21,9 +21,9 @@ with open('/home/dhall/tmp/brownfox', "rb") as binary_input_file, \
 		time.sleep(.005)
 		print(binary_data)
 		print(binary_data.decode('utf-8'))
-		# Encoding to base64 leaves it in binary mode, need to decode to text
+		# Encoding to base64 leaves it in binary mode, need to decode the binary text
 		print(codecs.encode(binary_data, 'base64'))
-		print(codecs.encode(binary_data, 'base64').decode('utf-8'))
+		print(codecs.encode(binary_data, 'base64').encode('utf-8'))
 
 	logging.info('Writing file.')
 	binary_output_file.write(binary_data)
