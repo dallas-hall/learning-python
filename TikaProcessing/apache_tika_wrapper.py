@@ -66,7 +66,7 @@ def io_path_setup(i_path, o_path):
 	# delete output_path contents - lol don't add -rf / you clownz
 	rm_command = ['cd', output_path, ';', 'rm', '*']
 	if debugging:
-		print rm_command
+		print(rm_command)
 	subprocess.call(' '.join(rm_command), shell=True)
 
 
@@ -100,35 +100,35 @@ def clean_tika_output():
 		sed_command = ['sed', '-r', 's/\xc2\xa0//g', '"' + output_path + all_filenames[i] + '"', '>', sed_output_path + str(i + 0.01)]
 		if debugging:
 			all_filenames[i]
-			print sed_command
+			print(sed_command)
 		# https://codereview.stackexchange.com/a/162816
 		subprocess.call(' '.join(sed_command), shell=True)
 		# 2) Remove lines with spaces only
 		sed_command = ['sed', '-r', 's/^[[:blank:]]*$//g', sed_output_path + str(i + 0.01), '>', sed_output_path + str(i + 0.02)]
 		if debugging:
-			print sed_command
+			print(sed_command)
 		subprocess.call(' '.join(sed_command), shell=True)
 		# 3) Remove control chars
 		sed_command = ['sed', '-r', 's/[[:cntrl:]]//g', sed_output_path + str(i + 0.02), '>', sed_output_path + str(i + 0.03)]
 		if debugging:
-			print sed_command
+			print(sed_command)
 		subprocess.call(' '.join(sed_command), shell=True)
 		# 4) Remove base64 binary attachments
 		sed_command = ['sed', '-r', 's/^[[:punct:]A-Za-z0-9]+$//g', sed_output_path + str(i + 0.03), '>', sed_output_path + str(i + 0.04)]
 		if debugging:
-			print sed_command
+			print(sed_command)
 		subprocess.call(' '.join(sed_command), shell=True)
 		# 5) remove consecutive empty lines
 		cat_command = ['cat', '-s', sed_output_path + str(i + 0.04), '>', cat_output_path + str(i + 0.01)]
 		if debugging:
-			print cat_command
+			print(sed_command)
 		subprocess.call(' '.join(cat_command), shell=True)
 		# 6) Save processing
 		subprocess.call('cat ' + cat_output_path + str(i + 0.01) + ' > ' + '"' + output_path + all_filenames[i] + '"', shell=True)
 		# 7) cleanup
 		rm_command = ['rm', sed_output_path + str(i) + '.*', cat_output_path + str(i) + '.*']
 		if debugging:
-			print rm_command
+			print(rm_command)
 		subprocess.call(' '.join(rm_command), shell=True)
 		# 8) get output
 		output = subprocess.check_output(['cat', output_path + all_filenames[i]])
@@ -137,7 +137,7 @@ def clean_tika_output():
 		file_contents = re.sub('\n$', '', output)
 		current_file.append(file_contents)
 		if debugging:
-			print current_file
+			print(current_file)
 		final_output.append(current_file)
 
 
