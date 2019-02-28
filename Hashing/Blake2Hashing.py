@@ -21,3 +21,14 @@ print(blake2b_hash.hexdigest())
 logging.info('Blake2 32 bit optimised hashing.')
 time.sleep(.005)
 print(hashlib.blake2s(hash_input).hexdigest())
+
+hash_input = b'this is my hash input lolz.'
+logging.info('Blake2 64 bit optimised hashing.')
+time.sleep(.005)
+blake2b_hash = hashlib.blake2b()
+blake2b_hash.update(hash_input)
+print(blake2b_hash.hexdigest())
+
+logging.info('Blake2 32 bit optimised hashing.')
+time.sleep(.005)
+print(hashlib.blake2s(hash_input).hexdigest())
