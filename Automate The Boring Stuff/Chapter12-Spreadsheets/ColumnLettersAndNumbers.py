@@ -33,6 +33,7 @@ time.sleep(.005)
 # https://openpyxl.readthedocs.io/en/stable/usage.html#read-an-existing-workbook
 worksheet = workbook['Sheet1']
 logging.debug('Printing column indices from worksheet using openpyxl.utils')
+time.sleep(.005)
 # use the worksheet's maximum column to get the column letter and its number
 print('Column number ' + str(column_index_from_string(get_column_letter(worksheet.max_column))) + ' has the column letter ' + get_column_letter(worksheet.max_column))
 
