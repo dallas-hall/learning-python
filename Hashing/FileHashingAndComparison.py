@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import logging, sys, os, time, re, hashlib, pprint, json
+import logging, sys, os, time, re, hashlib, json
 from pathlib import Path, PurePath
 
 
@@ -70,56 +70,54 @@ def get_all_files_absolute_paths(directory):
 	return [PurePath.joinpath(directory, file) for file in Path(directory).iterdir()]
 
 
-def hash_files(algorithm):
-	for file in Path(input_path).iterdir():
-		choices = {
-			'blake2b': hashlib.blake2b(Path(file).read_bytes()).hexdigest(),
-			'blake2s': hashlib.blake2s(Path(file).read_bytes()).hexdigest(),
-			'md5': hashlib.md5(Path(file).read_bytes()).hexdigest(),
-			'sha1': hashlib.sha1(Path(file).read_bytes()).hexdigest(),
-			'sha224': hashlib.sha224(Path(file).read_bytes()).hexdigest(),
-			'sha256': hashlib.sha256(Path(file).read_bytes()).hexdigest(),
-			'sha384': hashlib.sha384(Path(file).read_bytes()).hexdigest(),
-			'sha3_224': hashlib.sha3_224(Path(file).read_bytes()).hexdigest(),
-			'sha3_256': hashlib.sha3_256(Path(file).read_bytes()).hexdigest(),
-			'sha3_384': hashlib.sha3_384(Path(file).read_bytes()).hexdigest(),
-			'sha3_512': hashlib.sha3_512(Path(file).read_bytes()).hexdigest(),
-			'sha512': hashlib.sha512(Path(file).read_bytes()).hexdigest(),
-			'shake_128': hashlib.shake_128(Path(file).read_bytes()).hexdigest(128),
-			'shake_256': hashlib.shake_256(Path(file).read_bytes()).hexdigest(256)
-		}
+def get_file_hash(algorithm, data):
+	if debugging:
+		hashing_algorithm = hashlib.new(algorithm)
+		hashing_algorithm.update(data)
+		logging.debug('(long) hash is ' + hashing_algorithm.hexdigest())
+		hashing_algorithm = hashlib.new(algorithm, data).hexdigest()
+		logging.debug('(short) hash is ' + hashing_algorithm)
+	return hashlib.new(algorithm, data).hexdigest()
 
-		algorithm_output = choices.get(hashing_algorithm, hashlib.md5(Path(file).read_bytes()).hexdigest())
-		hashed_files[file.name] = {
-			'checked': False,
-			'hash': algorithm_output,
-			'hashAlgorithm': algorithm,
-			'duplicateFiles': []
-		}
+
+def hash_files(algorithm):
+
+	for file in Path(input_path).iterdir():
+		#hash_output = hashlib.new(algorithm, Path(file).read_bytes()).hexdigest()
+		hash_output = get_file_hash(algorithm, Path(file).read_bytes())
+
+		if hashed_files == {}:
+			hashed_files[hash_output] = {
+				'hashAlgorithm': algorithm,
+				'filenames': [file.name]
+			}
+		elif hash_output in hashed_files:
+			hashed_files[hash_output]['filenames'].append(file.name)
+		else:
+			hashed_files[hash_output] = {
+				'hashAlgorithm': algorithm,
+				'filenames': [file.name]
+			}
 
 		if debugging:
 			logging.debug(file)
 			logging.debug(file.name)
-			logging.debug(str(file) + ' is\n' + algorithm_output)
-			logging.debug(algorithm)
+			logging.debug(str(file) + ' is\n' + hash_output)
+
+	if debugging:
+		logging.debug(str(hashed_files))
 
 
 def check_for_duplicate_hashes():
-	for this_file, this_metadata in hashed_files.items():
-		if not this_metadata['checked']:
-			this_metadata['checked'] = True
-			for that_file, that_metadata in hashed_files.items():
-				if not that_metadata['checked'] and this_metadata['hash'] == that_metadata['hash']:
-					this_metadata['duplicateFiles'].append(that_file)
-					that_metadata['duplicateFiles'].append(this_file)
-		if debugging:
-			logging.debug('file is ' + str(this_file))
-			logging.debug('metadata is ' + str(this_metadata))
+	return None
+
+
+def print_dictionary():
+	print(json.dumps(hashed_files, indent=4, sort_keys=False))
 
 
 # Define logging and pretty print output
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
-pp = pprint.PrettyPrinter()
 
 # Enable debugging messages
 debugging = True
@@ -146,3 +144,4 @@ if debugging:
 hashed_files = {}
 hash_files(hashing_algorithm)
 check_for_duplicate_hashes()
+print_dictionary()
