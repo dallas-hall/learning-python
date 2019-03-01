@@ -79,12 +79,12 @@ def get_file_hash(algorithm, data):
 def hash_files(algorithm):
 	logging.info('Hashing files in ' + str(input_path))
 	time.sleep(.005)
+
 	for file in Path(input_path).iterdir():
 		#hash_output = hashlib.new(algorithm, Path(file).read_bytes()).hexdigest()
 		if Path.is_dir(Path(file)):
 			continue
 		hash_output = get_file_hash(algorithm, Path(file).read_bytes())
-
 		if hashed_files == {} or hash_output not in hashed_files:
 			hashed_files[hash_output] = {
 				'filenames': [file.name]
@@ -104,16 +104,20 @@ def hash_files(algorithm):
 def copy_unique_files_to_output():
 	logging.info('Saving unique hashed files to ' + str(output_path))
 	time.sleep(.005)
-	for hash, file_list in hashed_files.items():
-		shutil.copy(input_path / file_list['filenames'][0], output_path / file_list['filenames'][0])
-		if debugging:
-			time.sleep(.005)
-			logging.debug('hash is ' + str(hash))
-			logging.debug('file list is ' + str(file_list))
-			logging.debug('file list is ' + str(file_list['filenames']))
-			for files in file_list:
+	with open(output_path / 'file_metadata.txt', 'wt') as metadata_file:
+		metadata_file.write(hashing_algorithm + '_hash\tfiles\n')
+		for file_hash, file_list in hashed_files.items():
+			shutil.copy(input_path / file_list['filenames'][0], output_path / file_list['filenames'][0])
+			# https://stackoverflow.com/a/35119046 & https://stackoverflow.com/a/54345555
+			metadata_file.write(str(file_hash) + '\t' + ','.join(file_list['filenames']) + '\n')
+			if debugging:
 				time.sleep(.005)
-				logging.debug('for file ' + str(file_list[files]))
+				logging.debug('hash is ' + str(hash))
+				logging.debug('file list is ' + str(file_list))
+				logging.debug('file list is ' + str(file_list['filenames']))
+				for files in file_list:
+					time.sleep(.005)
+					logging.debug('for file ' + str(file_list[files]))
 
 
 # Define logging and pretty print output
