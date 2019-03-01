@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import logging, sys, os, time, re, hashlib, json
+import logging, sys, os, time, re, hashlib, json, shutil
 from pathlib import Path
 
 
@@ -38,7 +38,7 @@ def get_output_path():
 def get_hashing_algorithm():
 	while True:
 		print('Enter the hashing algorithm that you want to use from the list below.')
-		print(guaranteed_hash_algorithms)
+		print(available_hash_algorithms)
 
 		answer = input()
 		result = check_answer('Hashing algorithm is \'' + answer + '\', is this correct?')
@@ -50,7 +50,7 @@ def get_hashing_algorithm():
 
 
 def is_valid_hash_algorithm(algorithm):
-	return algorithm.lower() in guaranteed_hash_algorithms
+	return algorithm.lower() in available_hash_algorithms
 
 
 def get_absolute_path(path):
@@ -77,9 +77,12 @@ def get_file_hash(algorithm, data):
 
 
 def hash_files(algorithm):
-
+	logging.info('Hashing files in ' + str(input_path))
+	time.sleep(.005)
 	for file in Path(input_path).iterdir():
 		#hash_output = hashlib.new(algorithm, Path(file).read_bytes()).hexdigest()
+		if Path.is_dir(Path(file)):
+			continue
 		hash_output = get_file_hash(algorithm, Path(file).read_bytes())
 
 		if hashed_files == {} or hash_output not in hashed_files:
@@ -98,8 +101,19 @@ def hash_files(algorithm):
 		logging.debug(str(hashed_files))
 
 
-def print_dictionary():
-	print(json.dumps(hashed_files, indent=4, sort_keys=False))
+def copy_unique_files_to_output():
+	logging.info('Saving unique hashed files to ' + str(output_path))
+	time.sleep(.005)
+	for hash, file_list in hashed_files.items():
+		shutil.copy(input_path / file_list['filenames'][0], output_path / file_list['filenames'][0])
+		if debugging:
+			time.sleep(.005)
+			logging.debug('hash is ' + str(hash))
+			logging.debug('file list is ' + str(file_list))
+			logging.debug('file list is ' + str(file_list['filenames']))
+			for files in file_list:
+				time.sleep(.005)
+				logging.debug('for file ' + str(file_list[files]))
 
 
 # Define logging and pretty print output
@@ -113,12 +127,14 @@ if not debugging:
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
 time.sleep(.005)
 
-# System guaranteed hashing algorithms.
-guaranteed_hash_algorithms = sorted(hashlib.algorithms_guaranteed)
+# System available hashing algorithms.
+available_hash_algorithms = sorted(hashlib.algorithms_available)
 
 # Get user answers for paths and hashing algorithm
 input_path = get_input_path()
 output_path = get_output_path()
+if not Path.exists(output_path):
+	Path.mkdir(output_path)
 hashing_algorithm = get_hashing_algorithm()
 if debugging:
 	time.sleep(.005)
@@ -129,4 +145,7 @@ if debugging:
 # Hash all files in the base directory of the input_path (no recursive file walking)
 hashed_files = {}
 hash_files(hashing_algorithm)
-print_dictionary()
+if debugging:
+	time.sleep(.005)
+	logging.debug(json.dumps(hashed_files, indent=4, sort_keys=False))
+copy_unique_files_to_output()
