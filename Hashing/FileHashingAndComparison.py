@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import logging, sys, os, time, re, hashlib, json
-from pathlib import Path, PurePath
+from pathlib import Path
 
 
 # Functions
@@ -66,10 +66,6 @@ def get_absolute_path(path):
 	return Path.resolve(Path(path))
 
 
-def get_all_files_absolute_paths(directory):
-	return [PurePath.joinpath(directory, file) for file in Path(directory).iterdir()]
-
-
 def get_file_hash(algorithm, data):
 	if debugging:
 		hashing_algorithm = hashlib.new(algorithm)
@@ -86,18 +82,12 @@ def hash_files(algorithm):
 		#hash_output = hashlib.new(algorithm, Path(file).read_bytes()).hexdigest()
 		hash_output = get_file_hash(algorithm, Path(file).read_bytes())
 
-		if hashed_files == {}:
+		if hashed_files == {} or hash_output not in hashed_files:
 			hashed_files[hash_output] = {
-				'hashAlgorithm': algorithm,
 				'filenames': [file.name]
 			}
-		elif hash_output in hashed_files:
-			hashed_files[hash_output]['filenames'].append(file.name)
 		else:
-			hashed_files[hash_output] = {
-				'hashAlgorithm': algorithm,
-				'filenames': [file.name]
-			}
+			hashed_files[hash_output]['filenames'].append(file.name)
 
 		if debugging:
 			logging.debug(file)
@@ -106,10 +96,6 @@ def hash_files(algorithm):
 
 	if debugging:
 		logging.debug(str(hashed_files))
-
-
-def check_for_duplicate_hashes():
-	return None
 
 
 def print_dictionary():
@@ -143,5 +129,4 @@ if debugging:
 # Hash all files in the base directory of the input_path (no recursive file walking)
 hashed_files = {}
 hash_files(hashing_algorithm)
-check_for_duplicate_hashes()
 print_dictionary()
