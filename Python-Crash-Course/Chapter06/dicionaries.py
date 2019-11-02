@@ -29,5 +29,9 @@ print(dictionary['key1'])
 
 # Deleting an existing key value pair
 del(dictionary['key1'])
+# Returns None when it doesn't exist
+print(dictionary.get('key1'))
+# Return what you want when it doesn't exist
+print(dictionary.get('key1', 'Not Found.'))
 # This will fail because we deleted it.
 print(dictionary['key1'])
