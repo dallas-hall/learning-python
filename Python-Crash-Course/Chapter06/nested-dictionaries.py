@@ -47,3 +47,11 @@ for value in people.values():
 # Get a list of all the key and value pairs
 for key, value in people.items():
 	print("Printing key " + str(key) + ", which contains " + str(value))
+
+for key in people:
+	print("Key " + str(key))
+	print("First Name: " + people.get(key).get('first_name'))
+	print("Last Name: " + people.get(key).get('last_name'))
+	print("Age: " + str(people.get(key).get('age')))
+	print("Height: " + str(people.get(key).get('height')))
+	print("Weight: " + str(people.get(key).get('weight')))
