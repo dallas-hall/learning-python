@@ -11,3 +11,16 @@ if not debugging:
 # Print start message and delay slightly	
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
 time.sleep(.001)
+
+# input accepts a parameter to print as a message.
+reply = input("What is your favourite colour? ")
+print(f"Really? You like {reply}? That colour is stupid.")
+
+prompt = "Never tell anyone your credit number."
+# += concatenates a string to a string
+prompt += "\nWhat is your credit card number?"
+
+reply = input(prompt)
+print(f"You credit card number is {reply}.")
+
+
