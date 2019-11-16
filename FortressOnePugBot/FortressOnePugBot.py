@@ -13,12 +13,13 @@ from pytz import timezone
 import discord
 from discord.ext import commands
 
-# Enable debugging messages
+# Enable debugging messages - https://docs.python.org/3/library/asyncio-dev.html#logging
 debugging = False
 if debugging:
 	logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
 else:
 	logging.basicConfig(level=logging.INFO, format='%(asctime)s - [%(levelname)s] - %(message)s')
+logger = logging.getLogger("asyncio")
 
 # TODO Use 1 for testing
 if debugging:
@@ -43,6 +44,17 @@ TIME_OUT_HUMAN_READABLE = timedelta(seconds=TIME_OUT_SECONDS)
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
 time.sleep(.001)
 
+time_zones = {
+	"au_aest": "Australia/Brisbane",
+	"au_aedt": "Australia/Sydney",
+	"nz_auck": "Pacific/Auckland",
+	"kr_seoul": "Asia/Seoul",
+	"jp_tokyo": "Asia/Tokyo",
+	"us_pst": "America/Los_Angeles",
+	"us_cst": "America/Mexico_City",
+	"us_est": "America/New_York"
+}
+
 # Memes
 all_memes = {
 	"clans": {
@@ -65,17 +77,19 @@ all_pugs = {
 	"bot-testing": {
 		"active": False,
 		"timeoutTimer": None,
+		"timeoutTimes": [],
 		"teams": {
 			"red": [],
 			"blue": [],
 			"lastAdded": "",
 			"size": DEFAULT_TEAM_SIZE,
-			"maxPlayers": 8
+			"maxPlayers": DEFAULT_MAX_PLAYERS
 		}
 	},
 	"bot-testing-two": {
 		"active": False,
 		"timeoutTimer": None,
+		"timeoutTimes": [],
 		"teams": {
 			"red": [],
 			"blue": [],
@@ -87,6 +101,7 @@ all_pugs = {
 	"oceania": {
 		"active": False,
 		"timeoutTimer": None,
+		"timeoutTimes": [],
 		"teams": {
 			"red": [],
 			"blue": [],
@@ -98,6 +113,7 @@ all_pugs = {
 	"north-america": {
 		"active": False,
 		"timeoutTimer": None,
+		"timeoutTimes": [],
 		"teams": {
 			"red": [],
 			"blue": [],
@@ -109,6 +125,7 @@ all_pugs = {
 	"brazil": {
 		"active": False,
 		"timeoutTimer": None,
+		"timeoutTimes": [],
 		"teams": {
 			"red": [],
 			"blue": [],
@@ -120,6 +137,7 @@ all_pugs = {
 	"europe": {
 		"active": False,
 		"timeoutTimer": None,
+		"timeoutTimes": [],
 		"teams": {
 			"red": [],
 			"blue": [],
@@ -131,6 +149,7 @@ all_pugs = {
 	"east-asia": {
 		"active": False,
 		"timeoutTimer": None,
+		"timeoutTimes": [],
 		"teams": {
 			"red": [],
 			"blue": [],
@@ -142,6 +161,7 @@ all_pugs = {
 	"russia": {
 		"active": False,
 		"timeoutTimer": None,
+		"timeoutTimes": [],
 		"teams": {
 			"red": [],
 			"blue": [],
@@ -151,6 +171,101 @@ all_pugs = {
 		}
 	}
 }
+
+
+async def get_timeout_times(context):
+	channel = context.message.channel
+	timeout_times = ""
+	for a_time in all_pugs[channel.name]['timeoutTimes']:
+		timeout_times += "\t" + a_time + "\n"
+	return timeout_times
+
+
+async def get_player_counts(context):
+	channel = context.message.channel
+	player_counts = {
+		"blue": 0,
+		"red": 0,
+	}
+	count = 0
+	for player in all_pugs[channel.name]['teams']['blue']:
+		count += 1
+	player_counts["blue"] = count
+
+	count = 0
+	for player in all_pugs[channel.name]['teams']['red']:
+		count += 1
+	player_counts["red"] = count
+
+	return player_counts
+
+
+async def get_red_players(context):
+	channel = context.message.channel
+	red_players = []
+	for player in all_pugs[channel.name]['teams']['red']:
+		red_players.append(player)
+	return red_players
+
+
+async def get_red_players_display_names(context):
+	channel = context.message.channel
+	red_players = ""
+	for existing_player in all_pugs[channel.name]['teams']['red']:
+		red_players += str(existing_player.name) + ", "
+	if not red_players:
+		red_players = "no one"
+	else:
+		# Remove the last , and space
+		red_players = red_players[:-2]
+	return red_players
+
+
+async def get_red_players_mention_names(context):
+	channel = context.message.channel
+	red_players = ""
+	for existing_player in all_pugs[channel.name]['teams']['red']:
+		red_players += str(existing_player.mention) + ", "
+	if not red_players:
+		red_players = "no one"
+	else:
+		# Remove the last , and space
+		red_players = red_players[:-2]
+	return red_players
+
+
+async def get_blue_players(context):
+	channel = context.message.channel
+	blue_players = []
+	for player in all_pugs[channel.name]['teams']['blue']:
+		blue_players.append(player)
+	return blue_players
+
+
+async def get_blue_players_display_names(context):
+	channel = context.message.channel
+	blue_players = ""
+	for existing_player in all_pugs[channel.name]['teams']['blue']:
+		blue_players += str(existing_player.name) + ", "
+	if not blue_players:
+		blue_players = "no one"
+	else:
+		# Remove the last , and space
+		blue_players = blue_players[:-2]
+	return blue_players
+
+
+async def get_blue_players_mention_names(context):
+	channel = context.message.channel
+	blue_players = ""
+	for existing_player in all_pugs[channel.name]['teams']['blue']:
+		blue_players += str(existing_player.mention) + ", "
+	if not blue_players:
+		blue_players = "no one"
+	else:
+		# Remove the last , and space
+		blue_players = blue_players[:-2]
+	return blue_players
 
 
 async def set_team_sizes(context, argument):
@@ -181,25 +296,24 @@ async def start_pug_command(context):
 	# Check if a PUG is already active for that channel.
 	if all_pugs[channel.name]['active']:
 		await context.send(
-			f"`#{channel.name}` has an existing PUG, {player.mention}. Type `{bot.command_prefix}join` to join a team.")
+			f"`#{channel.name}` has an existing PUG, {player.name}. Type `{bot.command_prefix}join` to join a team.")
 	else:
 		# start the PUG
 		all_pugs[channel.name]['active'] = True
 		# add the player to a random team in the PUG
 		prn = randrange(0, 2)
 		if prn == 0:
-			all_pugs[channel.name]['teams']['red'].append(player.mention)
+			all_pugs[channel.name]['teams']['red'].append(player)
 			all_pugs[channel.name]['teams']['lastAdded'] = "red"
 		else:
-			all_pugs[channel.name]['teams']['blue'].append(player.mention)
+			all_pugs[channel.name]['teams']['blue'].append(player)
 			all_pugs[channel.name]['teams']['lastAdded'] = "blue"
 		team_colour = all_pugs[channel.name]['teams']['lastAdded']
 		# Using channel.mention here to notify all people in the channel that a PUG has started.
-		await context.send(f"{player.mention} started a PUG for {channel.mention} and has joined team {team_colour}.\nThis PUG will automatically end in {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
+		await context.send(f"{player.name} started a PUG for {channel.mention} and has joined team {team_colour}.\nThis PUG will automatically end in {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
 		# TODO add timer
 		logging.info(f"#{channel.name} PUG started. Ending PUG after {TIME_OUT_SECONDS} seconds.")
-		pprint(all_pugs[channel.name])
-		all_pugs[channel.name]['timeoutTimer'] = await start_timer(context)
+		await start_timer(context)
 	logging.debug(f"start_pug_command exited - #{channel.name}")
 
 
@@ -213,7 +327,6 @@ async def end_pug_command(context, pug_timed_out):
 		#await cancel_timer(context)
 		timer_task = all_pugs[channel.name]['timeoutTimer']
 		await reset_pug(channel)
-		print("pug_timed_out is " + str(pug_timed_out))
 
 		if pug_timed_out:
 			await context.send(f"`#{channel.name}` PUG ended due to timeout after {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
@@ -228,7 +341,7 @@ async def end_pug_command(context, pug_timed_out):
 
 	logging.debug(f"end_pug_command exited - #{channel.name}")
 	if timer_task is not None and timer_task is not True:
-		timer_task.cancel()
+		await timer_task.cancel()
 
 
 async def join_pug_command(context):
@@ -245,13 +358,13 @@ async def join_pug_command(context):
 	else:
 		# Check if the player has already joined a team.
 		for existing_player in all_pugs[channel.name]['teams']['red']:
-			if existing_player == player.mention:
+			if existing_player == player:
 				already_joined = True
 				team_colour = 'red'
 				break
 		if not already_joined:
 			for existing_player in all_pugs[channel.name]['teams']['blue']:
-				if existing_player == player.mention:
+				if existing_player == player:
 					already_joined = True
 					team_colour = 'blue'
 					break
@@ -263,19 +376,19 @@ async def join_pug_command(context):
 				all_pugs[channel.name]['teams']['lastAdded'] = "blue"
 			# Add to red if blue has more players.
 			elif len(all_pugs[channel.name]['teams']['red']) < len(all_pugs[channel.name]['teams']['blue']):
-				all_pugs[channel.name]['teams']['red'].append(player.mention)
+				all_pugs[channel.name]['teams']['red'].append(player)
 				all_pugs[channel.name]['teams']['lastAdded'] = "red"
 			# Add to the next team, the opposite of the last team that got a player.
 			else:
 				if all_pugs[channel.name]['teams']['lastAdded'] == 'red':
-					all_pugs[channel.name]['teams']['blue'].append(player.mention)
+					all_pugs[channel.name]['teams']['blue'].append(player)
 					all_pugs[channel.name]['teams']['lastAdded'] = "blue"
 				else:
-					all_pugs[channel.name]['teams']['red'].append(player.mention)
+					all_pugs[channel.name]['teams']['red'].append(player)
 					all_pugs[channel.name]['teams']['lastAdded'] = "red"
 			team_colour = all_pugs[channel]['teams']['lastAdded']
 			pprint(all_pugs[channel.name])
-			await context.send(f"{player.mention} has been added to the {team_colour} team.")
+			await context.send(f"{player} has been added to the {team_colour} team.")
 			# Start the timer if they are the first player to join
 			if len(all_pugs[channel.name]['teams']['red']) == 0 and len(all_pugs[channel.name]['teams']['blue']) == 1 or \
 				len(all_pugs[channel.name]['teams']['red']) == 1 and len(all_pugs[channel.name]['teams']['blue']) == 0:
@@ -294,6 +407,7 @@ async def join_pug_command(context):
 			await context.send(f"You are on the {team_colour} team already {player.name}")
 	logging.debug(f"join_pug_command exited - #{channel.name}")
 
+
 async def leave_pug_command(context):
 	channel = context.message.channel
 	player = context.message.author
@@ -302,22 +416,22 @@ async def leave_pug_command(context):
 	already_joined = False
 	# Check if a pug exists for this channel
 	if not all_pugs[context.message.channel.name]["active"]:
-		await context.send(f"{player.mention}, there is no PUG for #`#{channel.name}`. Type `{bot.command_prefix}startpug` to start one.")
+		await context.send(f"{player.name}, there is no PUG for #`#{channel.name}`. Type `{bot.command_prefix}startpug` to start one.")
 	else:
 	# Check if the player has already joined
 		for existing_player in all_pugs[channel.name]['teams']['red']:
-			if existing_player == player.mention:
+			if existing_player == player:
 				already_joined = True
 				team_colour = "red"
 				break
 		if not already_joined:
 			for existing_player in all_pugs[channel.name]['teams']['blue']:
-				if existing_player == player.mention:
+				if existing_player == player:
 					already_joined = True
 					team_colour = "blue"
 					break
 		if already_joined:
-			all_pugs[channel.name]['teams'][team_colour].remove(player.mention)
+			all_pugs[channel.name]['teams'][team_colour].remove(player)
 			if await are_teams_empty(channel):
 				# await reset_pug(channel)
 				#await context.send(f"{player.mention} has left the {team_colour} team and ended the PUG for `#{channel.name}`. Type `{bot.command_prefix}startpug` to start one.")
@@ -334,7 +448,7 @@ async def leave_pug_command(context):
 				# TODO Update current player count display
 				await context.send(f"{player.name} has left the {team_colour} team.")
 		else:
-			await context.send(f"You can't leave since you aren't in a team {player.mention}.")
+			await context.send(f"You can't leave since you aren't in a team {player.name}.")
 	logging.debug(f"leave_pug_command exited - #{channel.name}")
 
 
@@ -344,28 +458,25 @@ async def team_pug_status_command(context):
 	logging.debug(f"team_pug_status_command entered.- #{channel.name}")
 	if not all_pugs[channel.name]['active']:
 		await context.send(
-			f"{player.mention}, there is no PUG for `#{channel.name}`. Type `{bot.command_prefix}startpug` to start one.")
+			f"{player.name}, there is no PUG for `#{channel.name}`. Type `{bot.command_prefix}startpug` to start one.")
 	else:
 		# Get the players from both teams
-		blue_players = ""
-		for existing_player in all_pugs[channel.name]['teams']['blue']:
-			blue_players += str(existing_player) + ", "
-		if not blue_players:
-			blue_players = "no one"
-		else:
-			# Remove the last , and space
-			blue_players = blue_players[:-2]
-		red_players = ""
-		for existing_player in all_pugs[channel.name]['teams']['red']:
-			red_players += str(existing_player) + ", "
-		if not red_players:
-			red_players = "no one"
-		else:
-			red_players = red_players[:-2]
+		blue_players = await get_blue_players_display_names(context)
+		red_players = await get_red_players_display_names(context)
+
 		# TODO add current player count display
-		await context.send(f"For the PUG in `#{channel.name}`, there are N players, and it will currently expire at M." +
-							"\nBlue team currently has " + blue_players + 
-							".\nRed team currently has " + red_players + ".")
+		player_counts = await get_player_counts(context)
+		pprint(player_counts)
+		blue = player_counts["blue"]
+		red = player_counts["red"]
+		team_size = all_pugs[channel.name]["teams"]["size"]
+		current_count = blue + red
+		expire_times = await get_timeout_times(context)
+		max_players = all_pugs[channel.name]["teams"]["maxPlayers"]
+		await context.send(f"For the PUG in `#{channel.name}`, there are {current_count}/{max_players} players, and it will currently expire at\n{expire_times}" +
+							f"Blue team currently has {blue}/{team_size} - " + blue_players +
+							f".\nRed team currently has {red}/{team_size} - " + red_players + ".")
+		pprint(all_pugs[channel.name])
 		logging.debug(f"team_pug_status_command exited - #{channel.name}")
 
 
@@ -383,6 +494,7 @@ async def are_teams_full(channel):
 		   len(all_pugs[channel.name]['teams']['blue']) == all_pugs[channel.name]['teams']['size']
 
 
+#TODO UPDATE THIS WITH NEW FIELDS
 async def reset_pug(channel):
 	logging.debug(f"reset_pug entered - #{channel.name}")
 	all_pugs[channel.name]['active'] = False
@@ -409,15 +521,12 @@ async def start_the_game(context):
 	return all_players[:-2]
 
 
-async def send_channel_message(context, message):
-	await context.send(message)
-
-
 async def do_function_after(delay, function):
 	logging.debug("do_after_function entered.")
 	await asyncio.sleep(delay)
-	logging.debug("do_after_function object print.")
-	print(function)
+	if debugging:
+		logging.debug("do_after_function object print.")
+		print(function)
 	await function
 	logging.debug("do_after_function exited.")
 
@@ -433,8 +542,28 @@ async def start_timer(context):
 	)
 	# TODO store the timer for the channel
 	all_pugs[channel.name]['timeoutTimer'] = timer_task
+	if channel.name is 'oceania' or channel.name == 'bot-testing' or channel.name == 'bot-testing-two':
+		all_pugs[channel.name]['timeoutTimes'].append("Sydney - " + (datetime.now(timezone(time_zones["au_aedt"])) +
+			timedelta(seconds=TIME_OUT_SECONDS)).strftime("%Y-%m-%d %H:%M:%S"))
+		all_pugs[channel.name]['timeoutTimes'].append("Auckland - " + (datetime.now(timezone(time_zones["nz_auck"])) +
+			timedelta(seconds=TIME_OUT_SECONDS)).strftime("%Y-%m-%d %H:%M:%S"))
+		all_pugs[channel.name]['timeoutTimes'].append("zel - some time way after what was expected.")
+	elif channel.name == 'north-america':
+		all_pugs[channel.name]['timeoutTimes'].append("L.A. - " + (datetime.now(timezone(time_zones["us_pst"])) +
+			timedelta(seconds=TIME_OUT_SECONDS)).strftime("%Y-%m-%d %H:%M:%S"))
+		all_pugs[channel.name]['timeoutTimes'].append("Mexico - " + (datetime.now(timezone(time_zones["us_cst"])) +
+			timedelta(seconds=TIME_OUT_SECONDS)).strftime("%Y-%m-%d %H:%M:%S"))
+		all_pugs[channel.name]['timeoutTimes'].append("N.Y - " + (datetime.now(timezone(time_zones["us_est"])) +
+			timedelta(seconds=TIME_OUT_SECONDS)).strftime("%Y-%m-%d %H:%M:%S"))
+	elif channel.name == 'east-asia':
+		all_pugs[channel.name]['timeoutTimes'].append("Tokyo/Seoul - " + (datetime.now(timezone(time_zones["jp_tokyo"])) +
+			timedelta(seconds=TIME_OUT_SECONDS)).strftime("%Y-%m-%d %H:%M:%S"))
+	else:
+		all_pugs[channel.name]['timeoutTimes'].append("No one use this here so fuck your time.")
+
 	# TODO start the timer
 	logging.info(f"#{channel.name} timer started.")
+	pprint(all_pugs[channel.name])
 	await all_pugs[channel.name]['timeoutTimer']
 	logging.debug(f"start_timer exited - #{channel.name}")
 	
@@ -445,7 +574,8 @@ async def cancel_timer(context):
 	# TODO cancel the existing timer for the channel
 	all_pugs[channel.name]['timeoutTimer'].cancel()
 	logging.info(f"#{channel.name} timer cancelled.")
-	print(all_pugs[channel.name]['timeoutTimer'])
+	if debugging:
+		print(all_pugs[channel.name]['timeoutTimer'])
 	logging.debug(f"cancel_timer exited - #{channel.name}")
 
 
@@ -471,8 +601,9 @@ bot.self_bot = False # Ignore itself
 async def on_ready():
 	print("Logged in as " + str(bot.user.name) + " with the ID " + str(bot.user.id))
 	print("The current version of Discord is " + str(discord.version_info))
-	print("The all_pugs dictionary currently is:\n")
-	pprint(all_pugs)
+	if debugging:
+		print("The all_pugs dictionary currently is:\n")
+		pprint(all_pugs)
 
 
 # TODO use cogs to group commands into categories (PUG and meme)
@@ -517,17 +648,6 @@ async def pugstatus(context):
 
 @bot.command(description="Print common Australian and American timezones.", aliases=["t"], help="Print time.")
 async def time(context):
-	time_zones = {
-		"au_aest": "Australia/Brisbane",
-		"au_aedt": "Australia/Sydney",
-		"nz_auck": "Pacific/Auckland",
-		"kr_seoul": "Asia/Seoul",
-		"jp_tokyo": "Asia/Tokyo",
-		"us_pst": "America/Los_Angeles",
-		"us_cst": "America/Mexico_City",
-		"us_est": "America/New_York"
-	}
-
 	message = ""
 	for k,v in time_zones.items():
 		message += f"Current time in {v} is " + datetime.now(timezone(v)).strftime("%Y-%m-%d %H:%M:%S\n")
@@ -535,22 +655,22 @@ async def time(context):
 	await context.send(message)
 
 
-@bot.command(aliases=["tst"])
-async def test_start_timer(context):
-	await context.send(f"Start test timer with {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
-	await start_timer(context)
-
-
-@bot.command(aliases=["tct"])
-async def test_cancel_timer(context):
-	await context.send(f"Cancelling test timer.")
-	await cancel_timer(context)
-
-
-@bot.command(aliases=["trt"])
-async def test_restart_timer(context):
-	await context.send(f"Restarting test timer with {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
-	await restart_timer(context)
+# @bot.command(aliases=["tst"])
+# async def test_start_timer(context):
+# 	await context.send(f"Start test timer with {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
+# 	await start_timer(context)
+# 
+# 
+# @bot.command(aliases=["tct"])
+# async def test_cancel_timer(context):
+# 	await context.send(f"Cancelling test timer.")
+# 	await cancel_timer(context)
+# 
+# 
+# @bot.command(aliases=["trt"])
+# async def test_restart_timer(context):
+# 	await context.send(f"Restarting test timer with {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
+# 	await restart_timer(context)
 
 # Token goes here. TODO change to environment variable.
 bot.run(os.environ['FORTRESSONE_PUG_BOT_TOKEN'])
