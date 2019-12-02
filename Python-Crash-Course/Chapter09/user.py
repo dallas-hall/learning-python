@@ -41,8 +41,14 @@ class User:
 	def get_join_date(self):
 		return self.join_date
 
-	def login(self):
-		self.last_login_date = datetime.now(timezone("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")
+	def login(self, email, password):
+		# Sleep to simulate hashing
+		time.sleep(1)
+		if self.email == email and self.password == password:
+			print(f"Welcome {self.name}.")
+			self.last_login_date = datetime.now(timezone("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")
+		else:
+			print(f"Incorrect email and/or password.")
 
 
 users = [
@@ -55,8 +61,10 @@ for user in users:
 	print(f"The current user's password is {user.password}. Yeah, we store passwords in plaintext, YOLO.")
 	print(f"The current user's email is {user.email}.")
 	print(f"The current user's join date is {user.join_date}.")
-	time.sleep(1)
-	user.login()
+	if user.name == "Alice":
+		user.login("alice@gmail.com", "abc123")
+	else:
+		user.login("bob@gmail.com", "passw0rd")
 	print(f"The current user's last login date is {user.last_login_date}.")
 
 
