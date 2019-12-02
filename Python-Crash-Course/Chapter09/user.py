@@ -21,6 +21,7 @@ class User:
 		self.password = password
 		self.email = email
 		self.join_date = datetime.now(timezone("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")
+		self.last_login_date = self.join_date
 
 	def get_name(self):
 		return self.name
@@ -40,6 +41,9 @@ class User:
 	def get_join_date(self):
 		return self.join_date
 
+	def login(self):
+		self.last_login_date = datetime.now(timezone("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")
+
 
 users = [
 	User("Alice", "abc123", "alice@gmail.com"),
@@ -51,6 +55,9 @@ for user in users:
 	print(f"The current user's password is {user.password}. Yeah, we store passwords in plaintext, YOLO.")
 	print(f"The current user's email is {user.email}.")
 	print(f"The current user's join date is {user.join_date}.")
+	time.sleep(1)
+	user.login()
+	print(f"The current user's last login date is {user.last_login_date}.")
 
 
 
