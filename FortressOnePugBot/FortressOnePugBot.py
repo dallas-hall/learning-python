@@ -14,7 +14,7 @@ import discord
 from discord.ext import commands
 
 # Enable debugging messages - https://docs.python.org/3/library/asyncio-dev.html#logging
-debugging = False
+debugging = True
 if debugging:
 	logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
 else:
@@ -33,7 +33,7 @@ SECONDS_IN_MINUTE = 60
 MINUTES_IN_HOUR = 60
 HOURS_UNTIL_TIMEOUT = 4 # Change this to adjust timer
 if debugging:
-	TIME_OUT_SECONDS = 60
+	TIME_OUT_SECONDS = SECONDS_IN_MINUTE * 5
 else:
 	TIME_OUT_SECONDS = SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_UNTIL_TIMEOUT
 TIME_OUT_HUMAN_READABLE = timedelta(seconds=TIME_OUT_SECONDS)
@@ -53,6 +53,8 @@ time_zones = {
 	"us_pst": "America/Los_Angeles",
 	"us_cst": "America/Mexico_City",
 	"us_est": "America/New_York"
+	#TODO cet/cest for europe
+	#TODO !gmt, convert current timeout time to user's locale
 }
 
 # Memes
@@ -73,8 +75,17 @@ all_memes = {
 }
 
 # Pugs for each region
-all_pugs = {
-	"bot-testing": {
+if debugging:
+	game_channels = ["bot-testing", "bot-testing-two"]
+else:
+	game_channels = ["bot-testing", "bot-testing-two", "oceania", "north-america", "brazil", "europe", "east-asia", "russia"]
+all_pugs = {}
+for channel in game_channels:
+	if channel == "bot-testing-two":
+		role_name = "bot-testing-2"
+	else:
+		role_name = channel
+	all_pugs[channel] = {
 		"active": False,
 		"timeoutTimer": None,
 		"timeoutTimes": [],
@@ -84,93 +95,14 @@ all_pugs = {
 			"lastAdded": "",
 			"size": DEFAULT_TEAM_SIZE,
 			"maxPlayers": DEFAULT_MAX_PLAYERS
-		}
-	},
-	"bot-testing-two": {
-		"active": False,
-		"timeoutTimer": None,
-		"timeoutTimes": [],
-		"teams": {
-			"red": [],
-			"blue": [],
-			"lastAdded": "",
-			"size": DEFAULT_TEAM_SIZE,
-			"maxPlayers": DEFAULT_MAX_PLAYERS
-		}
-	},
-	"oceania": {
-		"active": False,
-		"timeoutTimer": None,
-		"timeoutTimes": [],
-		"teams": {
-			"red": [],
-			"blue": [],
-			"lastAdded": "",
-			"size": DEFAULT_TEAM_SIZE,
-			"maxPlayers": DEFAULT_MAX_PLAYERS
-		}
-	},
-	"north-america": {
-		"active": False,
-		"timeoutTimer": None,
-		"timeoutTimes": [],
-		"teams": {
-			"red": [],
-			"blue": [],
-			"lastAdded": "",
-			"size": DEFAULT_TEAM_SIZE,
-			"maxPlayers": DEFAULT_MAX_PLAYERS
-		}
-	},
-	"brazil": {
-		"active": False,
-		"timeoutTimer": None,
-		"timeoutTimes": [],
-		"teams": {
-			"red": [],
-			"blue": [],
-			"lastAdded": "",
-			"size": DEFAULT_TEAM_SIZE,
-			"maxPlayers": DEFAULT_MAX_PLAYERS
-		}
-	},
-	"europe": {
-		"active": False,
-		"timeoutTimer": None,
-		"timeoutTimes": [],
-		"teams": {
-			"red": [],
-			"blue": [],
-			"lastAdded": "",
-			"size": DEFAULT_TEAM_SIZE,
-			"maxPlayers": DEFAULT_MAX_PLAYERS
-		}
-	},
-	"east-asia": {
-		"active": False,
-		"timeoutTimer": None,
-		"timeoutTimes": [],
-		"teams": {
-			"red": [],
-			"blue": [],
-			"lastAdded": "",
-			"size": DEFAULT_TEAM_SIZE,
-			"maxPlayers": DEFAULT_MAX_PLAYERS
-		}
-	},
-	"russia": {
-		"active": False,
-		"timeoutTimer": None,
-		"timeoutTimes": [],
-		"teams": {
-			"red": [],
-			"blue": [],
-			"lastAdded": "",
-			"size": DEFAULT_TEAM_SIZE,
-			"maxPlayers": DEFAULT_MAX_PLAYERS
-		}
+		},
+		"roleName": role_name
 	}
-}
+
+
+async def mention_role(context):
+	channel = context.message.channel
+	await context.send(discord.utils.get(context.guild.roles, name=all_pugs[channel.name]["roleName"]).mention)
 
 
 async def get_timeout_times(context):
@@ -278,14 +210,14 @@ async def set_team_sizes(context, argument):
 			await context.send(
 				f"{player.mention}, your inputs aren't sensible. Must be between {MIN_TEAM_SIZE} and {MAX_TEAM_SIZE}, inclusive.")
 		elif all_pugs[context.message.channel.name]["active"]:
-			await context.send("Team sizes can only be updated before a PUG has started.")
+			await context.send("Team sizes can only be updated before a PUG has get_ed.")
 		else:
 			all_pugs[context.message.channel.name]["teams"]["size"] = int(argument)
 			all_pugs[context.message.channel.name]["teams"]["maxPlayers"] = int(argument) * 2
 			await context.send(
 				f"{player.mention} set team sizes set to " + argument + ". Total players allowed is " + str(int(argument) * 2))
 	else:
-		await context.send("Invalid argument. Must be a number.")
+		await context.send("Invalid argument. Must be an Integer.")
 	logging.debug(f"set_team_sizes exited - #{channel.name}")
 
 
@@ -310,6 +242,7 @@ async def start_pug_command(context):
 			all_pugs[channel.name]['teams']['lastAdded'] = "blue"
 		team_colour = all_pugs[channel.name]['teams']['lastAdded']
 		# Using channel.mention here to notify all people in the channel that a PUG has started.
+		#TODO Change to role mention for the channel
 		await context.send(f"{player.name} started a PUG for {channel.mention} and has joined team {team_colour}.\nThis PUG will automatically end in {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
 		# TODO add timer
 		logging.info(f"#{channel.name} PUG started. Ending PUG after {TIME_OUT_SECONDS} seconds.")
@@ -334,6 +267,8 @@ async def end_pug_command(context, pug_timed_out):
 		else:
 			await context.send(f"{player.name} stopped the PUG for `#{channel.name}`")
 			logging.info(f"#{channel.name}` PUG ended due to players.")
+
+		pprint(all_pugs[channel.name]['active'])
 	else:
 		timer_task = None
 		await context.send(
@@ -341,7 +276,8 @@ async def end_pug_command(context, pug_timed_out):
 
 	logging.debug(f"end_pug_command exited - #{channel.name}")
 	if timer_task is not None and timer_task is not True:
-		await timer_task.cancel()
+		# TODO fix this cancelling of the timer
+		timer_task.cancel()
 
 
 async def join_pug_command(context):
@@ -386,9 +322,9 @@ async def join_pug_command(context):
 				else:
 					all_pugs[channel.name]['teams']['red'].append(player)
 					all_pugs[channel.name]['teams']['lastAdded'] = "red"
-			team_colour = all_pugs[channel]['teams']['lastAdded']
+			team_colour = all_pugs[channel.name]['teams']['lastAdded']
 			pprint(all_pugs[channel.name])
-			await context.send(f"{player} has been added to the {team_colour} team.")
+			await context.send(f"{player.name} has been added to the {team_colour} team.")
 			# Start the timer if they are the first player to join
 			if len(all_pugs[channel.name]['teams']['red']) == 0 and len(all_pugs[channel.name]['teams']['blue']) == 1 or \
 				len(all_pugs[channel.name]['teams']['red']) == 1 and len(all_pugs[channel.name]['teams']['blue']) == 0:
@@ -396,9 +332,10 @@ async def join_pug_command(context):
 			# TODO test restart timer
 			# Restart the timer if they aren't the first player to join
 			else:
-				await restart_timer(context)
+				logging.debug(f"timer would be restarted here - #{channel.name}")
+				# await restart_timer(context)
 			# TODO teams are full
-			if await are_teams_full(channel.name):
+			if await are_teams_full(channel):
 				all_players = await start_the_game(context)
 				await context.send("Game has started, time to join the server. " + all_players +
 								   f"\nThis PUG will automatically end in {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
@@ -499,6 +436,7 @@ async def reset_pug(channel):
 	logging.debug(f"reset_pug entered - #{channel.name}")
 	all_pugs[channel.name]['active'] = False
 	all_pugs[channel.name]['timeoutTimer'] = None
+	all_pugs[channel.name]['timeoutTimes'] = []
 	all_pugs[channel.name]['teams']['lastAdded'] = ""
 	all_pugs[channel.name]['teams']['blue'] = []
 	all_pugs[channel.name]['teams']['red'] = []
@@ -510,15 +448,11 @@ async def reset_pug(channel):
 async def start_the_game(context):
 	channel = context.message.channel
 	logging.debug(f"start_the_game entered - #{channel.name}")
-	all_players = ""
-	for existing_player in all_pugs[channel.name]['teams']['red']:
-		all_players += discord.utils.find(lambda m: m.name == existing_player, context.message.channel.members) + ", "
-
-	for existing_player in all_pugs[channel.name]['teams']['blue']:
-		all_players += discord.utils.find(lambda m: m.name == existing_player, context.message.channel.members) + ", "
-	# Remove the last space and comma
+	all_players = get_blue_players_mention_names(context)
+	all_players += ", "
+	all_players += get_red_players_mention_names(context)
 	logging.debug(f"start_the_game exited - #{channel.name}")
-	return all_players[:-2]
+	return all_players
 
 
 async def do_function_after(delay, function):
@@ -573,6 +507,7 @@ async def cancel_timer(context):
 	logging.debug(f"cancel_timer entered - #{channel.name}")
 	# TODO cancel the existing timer for the channel
 	all_pugs[channel.name]['timeoutTimer'].cancel()
+	all_pugs[channel.name]['timeoutTimes'] = []
 	logging.info(f"#{channel.name} timer cancelled.")
 	if debugging:
 		print(all_pugs[channel.name]['timeoutTimer'])
@@ -596,6 +531,7 @@ bot.case_insensitive = True
 bot.description = f"FortressOne PUG bot. Type {bot.command_prefix}help to see available commands."
 bot.self_bot = False # Ignore itself
 
+# TODO Create a channel greeter that asks people to add themselves to a region role
 # Wait for the bot to login and be ready
 @bot.event
 async def on_ready():
@@ -611,7 +547,7 @@ async def on_ready():
 # This automatically adds the command - https://discordpy.readthedocs.io/en/latest/ext/commands/commands.html#
 @bot.command(description=
 			 f"Set the amount of players per team for the PUG on this channel."
-			 "Default is {DEFAULT_TEAM_SIZE}, so {DEFAULT_TEAM_SIZE} vs {DEFAULT_TEAM_SIZE}.",
+			 f" Default is {DEFAULT_TEAM_SIZE}, so {DEFAULT_TEAM_SIZE} vs {DEFAULT_TEAM_SIZE}.",
 			 aliases=["ts"],
 			 help="Change team sizes.")
 async def teamsize(context, argument):
@@ -671,6 +607,28 @@ async def time(context):
 # async def test_restart_timer(context):
 # 	await context.send(f"Restarting test timer with {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
 # 	await restart_timer(context)
+
+# https://discordpy.readthedocs.io/en/latest/api.html#guild
+# @bot.command(aliases=["g"])
+# async def guild(context):
+# 	await context.send(f"The current guild (aka server) is {context.guild}")
+# 	await context.send(f"The current guild categories are {context.guild.categories}")
+# 	await context.send(f"The current guild roles are {context.guild.roles}")
+# 	await context.send(f"The current guild roles are {context.guild.roles.mention('bot-testing', )}")
+# 	await context.send(f"The current guild region is {context.guild.region}")
+# 	await context.send(f"The current channel roles are {context.message.channel.changed_roles}")
+# 	await context.send(f"The current user roles are {context.message.author.roles}")
+
+# https://discordpy.readthedocs.io/en/latest/api.html#role
+# https://discordpy.readthedocs.io/en/latest/api.html?#utility-functions
+# @bot.command(aliases=["tmr"])
+# async def test_mention_role(context):
+# 	await mention_role(context)
+
+
+# @bot.command(aliases=["g"])
+# async def gmt(context):
+# 	await context.send(context.message.author)
 
 # Token goes here. TODO change to environment variable.
 bot.run(os.environ['FORTRESSONE_PUG_BOT_TOKEN'])
