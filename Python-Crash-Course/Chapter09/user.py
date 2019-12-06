@@ -1,18 +1,7 @@
-#!/usr/bin/python3
-import logging, sys, os, time
+import time
 from datetime import datetime
 from pytz import timezone
 
-# Define logging output
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
-
-# Enable debugging messages
-debugging = True
-if not debugging:
-	logging.disable(logging.DEBUG)
-# Print start message and delay slightly	
-logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.001)
 
 class User:
 	# The constructor
@@ -49,23 +38,3 @@ class User:
 			self.last_login_date = datetime.now(timezone("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")
 		else:
 			print(f"Incorrect email and/or password.")
-
-
-users = [
-	User("Alice", "abc123", "alice@gmail.com"),
-	User("Bob", "password", "bob@gmail.com")
-]
-
-for user in users:
-	print(f"The current user's name is {user.name}.")
-	print(f"The current user's password is {user.password}. Yeah, we store passwords in plaintext, YOLO.")
-	print(f"The current user's email is {user.email}.")
-	print(f"The current user's join date is {user.join_date}.")
-	if user.name == "Alice":
-		user.login("alice@gmail.com", "abc123")
-	else:
-		user.login("bob@gmail.com", "passw0rd")
-	print(f"The current user's last login date is {user.last_login_date}.")
-
-
-
