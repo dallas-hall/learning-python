@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import logging, sys, os, time
 # To import this in PyCharm, right click the folder and mark as Sources Root
+# If you just use import car, you need ot use car dot notation. Good for avoiding naming conflicts.
 from car import Car
 
 # Define logging output
@@ -32,6 +33,7 @@ class ElectricCar(Car):
 		return super().get_details() + f" {self.battery.size} kWh battery at {self.battery.charge} kWh charge."
 
 
+# This could go into its own file.
 class Battery:
 	# size is an optional parameter, use the default of 75 if it isn't supplied
 	def __init__(self, size=75):
