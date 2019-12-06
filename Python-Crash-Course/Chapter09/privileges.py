@@ -1,13 +1,21 @@
-#!/usr/bin/python3
-import logging, sys, os, time
+class Privileges:
+	# Constructor, optional os parameter that defaults to linux
+	def __init__(self, os="linux"):
+		if os.lower() == "linux":
+			self.linux_admin = True
+			self.windows_admin = False
+		elif os.lower() == "windows":
+			self.linux_admin = False
+			self.windows_admin = True
 
-# Define logging output
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
+	def is_windows_admin(self):
+		if self.windows_admin:
+			return True
+		else:
+			return False
 
-# Enable debugging messages
-debugging = True
-if not debugging:
-	logging.disable(logging.DEBUG)
-# Print start message and delay slightly	
-logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.001)
+	def is_linux_admin(self):
+		if self.linux_admin:
+			return True
+		else:
+			return False
