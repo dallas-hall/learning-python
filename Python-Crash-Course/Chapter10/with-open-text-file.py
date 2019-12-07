@@ -33,3 +33,9 @@ with open(absolute_file_path) as file_object:
 		# Use rstrip to remove the \n from print
 		print(line.rstrip())
 
+with open(absolute_file_path) as file_object:
+	# Store all lines from the file into a list
+	all_file_lines = file_object.readlines()
+
+for line in all_file_lines:
+	print(line.rstrip())
