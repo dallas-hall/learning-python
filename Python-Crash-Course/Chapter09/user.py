@@ -4,12 +4,12 @@ from pytz import timezone
 
 
 class User:
-	# The constructor
-	def __init__(self, name, password, email):
+	# The constructor, optional argument join_date that if not explicitly passed, is the current timestamp.
+	def __init__(self, name, password, email, join_date=datetime.now(timezone("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")):
 		self.name = name
 		self.password = password
 		self.email = email
-		self.join_date = datetime.now(timezone("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")
+		self.join_date = join_date
 		self.last_login_date = self.join_date
 
 	def get_name(self):
