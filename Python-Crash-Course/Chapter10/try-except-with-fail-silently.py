@@ -18,5 +18,12 @@ try:
 except ZeroDivisionError:
 	print("Cannot divide by 0.")
 
+# Handle the exception object, but fail silently
+try:
+	print(5/0)
+except ZeroDivisionError:
+	# This tells Python to fail silently
+	pass
+
 # Dont't handle the exception object, program crash
 print(5/0)
