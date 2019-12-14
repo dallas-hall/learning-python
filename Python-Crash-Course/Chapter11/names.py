@@ -19,7 +19,7 @@ while not done:
 	first = input("Enter your first name (mandatory): ")
 	middle  = input("Enter your middle name (optional): ")
 	last = input("Enter your last name (optional): ")
-	print(get_formatted_name(first, last, middle))
+	print(get_formatted_name(first, middle, last))
 	result = input("Enter another name? (y|n): ")
 	if result.lower() == "n":
 		done = True
