@@ -18,20 +18,22 @@ time.sleep(.001)
 class NamesTestCase(unittest.TestCase):
 	"""Testing the formatted_names.py file."""
 
+	# Function name must start with test_ so its run automatically.
 	def test_first_name(self):
 		"""Does a single name work?"""
 		result = get_formatted_name("Ronaldo")
 		self.assertEqual(result, "Ronaldo")
 
 	def test_first_last_name(self):
-		"""Does a single name work?"""
-		result = get_formatted_name("janis", "joplin")
+		"""Does a first and last name work?"""
+		result = get_formatted_name("janis", "", "joplin")
 		self.assertEqual(result, "Janis Joplin")
 
 	def test_first_middle_last_name(self):
-		"""Does a single name work?"""
-		result = get_formatted_name("lee", "OSWALD", "harvey")
+		"""Does a full name of first, middle, and last name work?"""
+		result = get_formatted_name("lee", "harvey", "OSWALD")
 		self.assertEqual(result, "Lee Harvey Oswald")
+
 
 if __name__ == "__main__":
 	unittest.main()
