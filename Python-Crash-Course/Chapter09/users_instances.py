@@ -1,0 +1,39 @@
+#!/usr/bin/python3
+import logging, sys, os, time
+# To import this in PyCharm, right click the folder and mark as Sources Root
+from user import User
+# By just importing admin we can use dot notation to avoid naming conflicts.
+import admin
+
+# Define logging output
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
+
+# Enable debugging messages
+debugging = True
+if not debugging:
+	logging.disable(logging.DEBUG)
+# Print start message and delay slightly	
+logging.info('Starting ' + os.path.relpath(sys.argv[0]))
+time.sleep(.001)
+
+users = [
+	admin.Admin("Alice", "abc123", "alice@gmail.com", "linux"),
+	User("Bob", "password", "bob@gmail.com")
+]
+
+for user in users:
+	print(f"The current user's name is {user.name}.")
+	print(f"The current user's password is {user.password}. Yeah, we store passwords in plaintext, YOLO.")
+	print(f"The current user's email is {user.email}.")
+	print(f"The current user's join date is {user.join_date}.")
+	if user.name == "Alice":
+		user.login("alice@gmail.com", "abc123")
+	else:
+		user.login("bob@gmail.com", "passw0rd")
+	print(f"The current user's last login date is {user.last_login_date}.")
+	if type(user) is admin.Admin:
+		if user.os_privileges.is_linux_admin():
+			print("This user can administrate Linux")
+		if user.os_privileges.is_windows_admin():
+			print("This user can administrate Windows")
+
