@@ -24,5 +24,8 @@ for name in names:
 for employee in employess:
 	employee.print_details()
 
+for employee in employess:
+	employee.increase_salary()
 
-
+for employee in employess:
+	employee.print_details()
