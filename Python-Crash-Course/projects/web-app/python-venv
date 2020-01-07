@@ -1,0 +1,4 @@
+# Turn on venv
+source /home/blindcant/Development/python/Python-Crash-Course/projects/web-app/.venv/web-app/bin/activate
+# Turn off venv
+deactivate

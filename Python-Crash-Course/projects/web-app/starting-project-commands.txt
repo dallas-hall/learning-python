@@ -1,0 +1,14 @@
+# Create the Python Virtual Environment
+cd my_project
+python -m venv .venv
+source venv/bin/activate
+# Upgrade pip and install django
+pip install --upgrade pip
+pip install django
+# Create a django project
+django-admin startproject my_project .
+# Create the project database
+python manage.py migrate
+# Start the webserver
+python manage.py runserver 8001
+
