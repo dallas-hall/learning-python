@@ -133,3 +133,7 @@ bot-token.env
 
 # PyCharm
 .idea/
+
+# Django web apps
+learning_log/
+learning_logs/
