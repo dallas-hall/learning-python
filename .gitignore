@@ -135,5 +135,6 @@ bot-token.env
 .idea/
 
 # Django web apps
-learning_log/
-learning_logs/
+learning_log/__pycache__/
+learning_logs/__pycache__/
+learning_logs/__init__.py
