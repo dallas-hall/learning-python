@@ -15,4 +15,6 @@ urlpatterns = [
     # 2nd arg = What function to call
     # 3rd arg = URL pattern name, used internally as a reference.
     path("", views.index, name="index"),
+    # Topics page
+    path("topics/", views.topics, name="topics"),
 ]
