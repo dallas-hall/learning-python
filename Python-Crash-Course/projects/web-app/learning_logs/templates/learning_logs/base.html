@@ -1,3 +1,4 @@
+<!--Everything inherits from base.html-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +11,7 @@
 	<a href="{% url 'learning_logs:index' %}">Home</a>
 	<a href="{% url 'learning_logs:topics' %}">Topics</a>
 </p>
+<!-- The jinja2 templates are inserted here -->
 {% block content %}{%endblock content%}
 </body>
 </html>

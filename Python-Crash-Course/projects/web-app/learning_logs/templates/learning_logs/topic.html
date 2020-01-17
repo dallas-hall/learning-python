@@ -3,8 +3,10 @@
 {% block content %}
 <h2>{{ topic }}</h2>
 <h3>Entries</h3>
+<!-- For loop syntax in a jinja2 template. -->
 {% for entry in entries %}
 <h4>{{ entry.date_added|date:"M d,Y H:i" }}</h4><p>{{ entry.text|linebreaks }}</p>
+<!-- What to do when the collection is empty. -->
 {% empty %}
 <p>There are no entries for this topic yet.</p>
 {% endfor %}

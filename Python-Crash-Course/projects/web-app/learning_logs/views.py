@@ -24,7 +24,8 @@ def topics(request):
     return render(request, "learning_logs/topics.html", context)
 
 
-def topic(request,topic_id):
+# This requires an additional argument that is used in the database.
+def topic(request, topic_id):
     """
     Show the details from a single topic.
     """

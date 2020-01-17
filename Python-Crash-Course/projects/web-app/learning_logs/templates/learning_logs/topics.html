@@ -3,6 +3,10 @@
 {% block content %}
 <h2>Topics</h2>
 <ul>
+	<!--
+	 The url tag must match app/urls.py
+	 This requires a topic_id argument so we pass it topic.id
+	 -->
 	{% for topic in topics %}
 	<li>
 		<a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
