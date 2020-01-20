@@ -15,7 +15,7 @@ def topics(request):
     """
     Show all topics.
     """
-    # Get the data from the database
+    # Get the data from the database, this must be an object so we can access its properties.
     topics = Topic.objects.order_by("date_added")
     # A dictionary containing keys are the names of templates to access data
     # The values are the data we need for the template.
