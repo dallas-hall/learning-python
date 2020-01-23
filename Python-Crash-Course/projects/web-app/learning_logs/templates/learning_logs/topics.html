@@ -16,4 +16,6 @@
 	<li>No topics have been entered yet.</li>
 	{% endfor %}
 </ul>
+<!--Users can add a new topic here.-->
+<a href="{% url 'learning_logs:new_topic' %}">Add a new topic.</a>
 {% endblock content %}
