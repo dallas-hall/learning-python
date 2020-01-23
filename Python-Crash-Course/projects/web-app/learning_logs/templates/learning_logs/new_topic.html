@@ -1,0 +1,17 @@
+<!--Inherit from our parent html file-->
+{% extends "learning_logs/base.html" %}
+
+<!--Define the content to be displayed after inheritance.-->
+{% block content %}
+<h2>Add A New Topic</h2>
+<!--Create a form based on our model and model's form. Use POST to submit.-->
+<form action="{% url 'learning_logs:new_topic' %}" method="post">
+<!--Try to prevent cross site request forgery.-->
+	{% csrf_token %}
+<!--Display the form in paragraph mode.-->
+	{{ form.as_p }}
+<!--Create the form submission button.-->
+	<button name="submit">Add topic</button>
+</form>
+
+{% endblock content %}

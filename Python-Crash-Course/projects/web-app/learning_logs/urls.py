@@ -20,5 +20,6 @@ urlpatterns = [
     # Pages for each topic, based on DB ID
     # Matches a number between // and stores it in the variable topic_id
     # This is passed as an arg to the topic view.
-    path("topics/<int:topic_id>/", views.topic, name="topic")
+    path("topics/<int:topic_id>/", views.topic, name="topic"),
+    path("new_topic/", views.new_topic, name="new_topic")
 ]
