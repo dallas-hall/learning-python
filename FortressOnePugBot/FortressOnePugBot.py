@@ -15,8 +15,11 @@ from discord.ext import commands
 # PUG SPAM
 # @here and @channel-region used on !startpug
 # @channel-region used when 3, 2, or 1 players are needed to get the game going.
-# DM the player when the pug has started.
+# DM the player when the pug has started due to having enough players to play.
 # When displaying channel message, if player.nick != None use it, else player.name.
+
+# switch message to embed
+# Remove HH:MM:SS from pug start message
 # replace crappy text with nicely formatted stuff
 # rewrite default help
 
@@ -31,7 +34,6 @@ else:
 	logging.basicConfig(level=logging.INFO, format='%(asctime)s - [%(levelname)s] - %(message)s')
 logger = logging.getLogger("asyncio")
 
-# TODO Use 1 for testing
 if debugging:
 	MIN_TEAM_SIZE = 1
 	DEFAULT_TEAM_SIZE = 1
@@ -65,7 +67,6 @@ time_zones = {
 	"us_cst": "America/Mexico_City",
 	"us_est": "America/New_York",
 	"us_bra": "America/Sao_Paulo"
-	#TODO cet/cest for europe
 	#TODO !gmt, convert current timeout time to user's locale
 }
 
@@ -86,6 +87,7 @@ all_memes = {
 	}
 }
 
+#TODO use channel names as regions
 # Pugs for each region
 if debugging:
 	game_channels = ["bot-testing", "bot-testing-two"]
@@ -275,9 +277,8 @@ async def start_pug_command(context):
 			all_pugs[channel.name]['teams']['lastAdded'] = "blue"
 		team_colour = all_pugs[channel.name]['teams']['lastAdded']
 		# Using channel.mention here to notify all people in the channel that a PUG has started.
-		#TODO Change to role mention for the channel
+		#TODO Use @here and channel's region.
 		await context.send(f"@here, {player.mention} started a PUG for {channel.mention} and has joined team {team_colour}.\nThis PUG will automatically end in {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
-		# TODO add timer
 		logging.info(f"#{channel.name} PUG started. Ending PUG after {TIME_OUT_SECONDS} seconds.")
 		await start_timer(context)
 	logging.debug(f"start_pug_command exited - #{channel.name}")
@@ -371,7 +372,7 @@ async def join_pug_command(context):
 			# TODO teams are full
 			if await are_teams_full(channel):
 				all_players = await start_the_game(context)
-				await context.send("@here, game has started! Time to join the server. " + all_players +
+				await context.send("Game has started! Time to join the server. " + all_players +
 								   f"\nThis PUG will automatically end in {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
 
 		else:
@@ -436,7 +437,6 @@ async def team_pug_status_command(context):
 		blue_players = await get_blue_players_display_names(context)
 		red_players = await get_red_players_display_names(context)
 
-		# TODO add current player count display
 		player_counts = await get_player_counts(context)
 		pprint(player_counts)
 		blue = player_counts["blue"]
@@ -503,13 +503,11 @@ async def do_function_after(delay, function):
 async def start_timer(context):
 	channel = context.message.channel
 	logging.debug(f"start_timer entered - #{channel.name}")
-	# TODO start the timer for the channel when a pug starts
 	# Create the async task
 	timer_task = asyncio.create_task(
 		# Delay running the passed in function
 		do_function_after(delay=TIME_OUT_SECONDS, function=end_pug_command(context, True))
 	)
-	# TODO store the timer for the channel
 	all_pugs[channel.name]['timeoutTimer'] = timer_task
 	if channel.name == 'oceania' or channel.name == 'bot-testing' or channel.name == 'bot-testing-two':
 		all_pugs[channel.name]['timeoutTimes'].append("Sydney - " + (datetime.now(timezone(time_zones["au_aedt"])) +
@@ -530,7 +528,6 @@ async def start_timer(context):
 	else:
 		all_pugs[channel.name]['timeoutTimes'].append("No one uses this here so fuck your time.")
 
-	# TODO start the timer
 	logging.info(f"#{channel.name} timer started.")
 	pprint(all_pugs[channel.name])
 	await all_pugs[channel.name]['timeoutTimer']
@@ -540,7 +537,6 @@ async def start_timer(context):
 async def cancel_timer(context):
 	channel = context.message.channel
 	logging.debug(f"cancel_timer entered - #{channel.name}")
-	# TODO cancel the existing timer for the channel
 	all_pugs[channel.name]['timeoutTimer'].cancel()
 	all_pugs[channel.name]['timeoutTimes'] = []
 	logging.info(f"#{channel.name} timer cancelled.")
@@ -553,9 +549,7 @@ async def restart_timer(context):
 	channel = context.message.channel
 	logging.debug(f"restart_timer entered - #{channel.name}")
 	logging.info(f"#{channel.name} timer restarted with {TIME_OUT_SECONDS} seconds.")
-	# TODO cancel the existing timer for the channel
 	await cancel_timer(context)
-	# TODO start the timer for the channel when a new player joins the pug
 	await start_timer(context)
 	logging.debug(f"restart_timer exited - #{channel.name}")
 
