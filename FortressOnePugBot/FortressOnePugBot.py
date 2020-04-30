@@ -14,17 +14,22 @@ from discord.ext import commands
 
 # PUG SPAM
 # @here and @channel-region used on !startpug
+#	There should be PUG regions, where people are happy to pug in. Those regions will be pinged only when a game starts.
 # @channel-region used when 3, 2, or 1 players are needed to get the game going.
+# reset the timer whenever someone joins
 # DM the player when the pug has started due to having enough players to play.
 # When displaying channel message, if player.nick != None use it, else player.name.
+# duel mode
 
 # switch message to embed
 # Remove HH:MM:SS from pug start message
 # replace crappy text with nicely formatted stuff
 # rewrite default help
+# qw://sydney.fortressone.org:27503 connect string links
 
 # KNOWN ISSUES
 # if someone disconnects it doesnt remove them from the pug
+# @KABUTO has been added to the blue team. 9/8 current players.
 
 # Enable debugging messages - https://docs.python.org/3/library/asyncio-dev.html#logging
 debugging = False
@@ -87,18 +92,44 @@ all_memes = {
 	}
 }
 
-#TODO use channel names as regions
 # Pugs for each region
 if debugging:
-	game_channels = ["bot-testing", "bot-testing-two"]
+	game_channels = ["bot-testing", "bot-testing-one", "bot-testing-two"]
 else:
-	game_channels = ["bot-testing", "bot-testing-two", "oceania", "north-america", "brazil", "europe", "east-asia"]
+	game_channels = [
+		"bot-testing",
+		"bot-testing-one",
+		"bot-testing-two",
+		"oceania",
+		"north-america",
+		"brazil",
+		"europe",
+		"east-asia"
+	]
+
 all_pugs = {}
 for channel in game_channels:
-	if channel == "bot-testing-two":
-		role_name = "bot-testing-2"
+	# Hard code the role IDs which I got from the !g command below
+	if channel == "oceania":
+		role_id = 427655970177548288
+	elif channel == "north-america":
+		role_id = 522695282887229440
+	elif channel == "south-america":
+		role_id = 531050407246561280
+	elif channel == "europe":
+		role_id = 533995292975038479
+	elif channel == "east-asia":
+		role_id = 543039259133739028
+	elif channel == "bot-testing":
+		role_id = 595880090131365888
+	elif channel == "bot-testing-one":
+		role_id = 646638599269384193
+	elif channel == "bot-testing-two":
+		role_id = 646645808053092362
 	else:
-		role_name = channel
+		role_id = None
+
+	# Set up the data structure for each channel.
 	all_pugs[channel] = {
 		"active": False,
 		"timeoutTimer": None,
@@ -110,7 +141,8 @@ for channel in game_channels:
 			"size": DEFAULT_TEAM_SIZE,
 			"maxPlayers": DEFAULT_MAX_PLAYERS
 		},
-		"roleName": role_name
+		# TODO test role mentions via role ID
+		"roleId": role_id
 	}
 
 
@@ -278,7 +310,9 @@ async def start_pug_command(context):
 		team_colour = all_pugs[channel.name]['teams']['lastAdded']
 		# Using channel.mention here to notify all people in the channel that a PUG has started.
 		#TODO Use @here and channel's region.
-		await context.send(f"@here, {player.mention} started a PUG for {channel.mention} and has joined team {team_colour}.\nThis PUG will automatically end in {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
+		#await context.send(f"@here, {player.mention} started a PUG for {channel.mention} and has joined team {team_colour}.\nThis PUG will automatically end in {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
+		channel_name = f"{channel.name}"
+		await context.send(f"{player.mention} started a PUG for @here and has joined team {team_colour}.")
 		logging.info(f"#{channel.name} PUG started. Ending PUG after {TIME_OUT_SECONDS} seconds.")
 		await start_timer(context)
 	logging.debug(f"start_pug_command exited - #{channel.name}")
@@ -358,8 +392,9 @@ async def join_pug_command(context):
 					all_pugs[channel.name]['teams']['lastAdded'] = "red"
 			team_colour = all_pugs[channel.name]['teams']['lastAdded']
 			pprint(all_pugs[channel.name])
-			player_count = await get_player_counts_string(context)
-			await context.send(f"{player.mention} has been added to the {team_colour} team. {player_count}")
+			# Update player counts
+			player_count_str = await get_player_counts_string(context)
+			await context.send(f"{player.mention} has been added to the {team_colour} team. {player_count_str}")
 			# Start the timer if they are the first player to join
 			if len(all_pugs[channel.name]['teams']['red']) == 0 and len(all_pugs[channel.name]['teams']['blue']) == 1 or \
 				len(all_pugs[channel.name]['teams']['red']) == 1 and len(all_pugs[channel.name]['teams']['blue']) == 0:
@@ -369,12 +404,19 @@ async def join_pug_command(context):
 			else:
 				logging.debug(f"timer would be restarted here - #{channel.name}")
 				# await restart_timer(context)
-			# TODO teams are full
 			if await are_teams_full(channel):
 				all_players = await start_the_game(context)
-				await context.send("Game has started! Time to join the server. " + all_players +
-								   f"\nThis PUG will automatically end in {TIME_OUT_HUMAN_READABLE} HH:MM:SS")
-
+				await context.send("Game has started! Time to join the server. " + all_players)
+				# TODO silently reset the pug as it has started
+			else:
+				# TODO use region mention for last 3 players
+				player_count = await get_player_counts(context)
+				if player_count["blue"] + player_count["red"] == 5:
+					await context.send(f"@here, 3 more needed.")
+				elif player_count["blue"] + player_count["red"] == 6:
+					await context.send(f"@here, 2 more needed.")
+				elif player_count["blue"] + player_count["red"] == 7:
+					await context.send(f"@here, 1 more needed.")
 		else:
 			await context.send(f"You are on the {team_colour} team already {player.mention}")
 	logging.debug(f"join_pug_command exited - #{channel.name}")
@@ -417,9 +459,9 @@ async def leave_pug_command(context):
 					all_pugs[channel.name]['teams']['lastAdded'] = 'blue'
 				else:
 					all_pugs[channel.name]['teams']['lastAdded'] = 'red'
-				# TODO Update current player count display
 				player_count = await get_player_counts_string(context)
 				await context.send(f"{player.mention} has left the {team_colour} team. {player_count}.")
+				# TODO use region mention for last 3 players
 		else:
 			await context.send(f"You can't leave since you aren't in a team {player.mention}.")
 	logging.debug(f"leave_pug_command exited - #{channel.name}")
@@ -642,15 +684,20 @@ async def time(context):
 # 	await restart_timer(context)
 
 # https://discordpy.readthedocs.io/en/latest/api.html#guild
-# @bot.command(aliases=["g"])
-# async def guild(context):
-# 	await context.send(f"The current guild (aka server) is {context.guild}")
-# 	await context.send(f"The current guild categories are {context.guild.categories}")
-# 	await context.send(f"The current guild roles are {context.guild.roles}")
-# 	await context.send(f"The current guild roles are {context.guild.roles.mention('bot-testing', )}")
-# 	await context.send(f"The current guild region is {context.guild.region}")
-# 	await context.send(f"The current channel roles are {context.message.channel.changed_roles}")
-# 	await context.send(f"The current user roles are {context.message.author.roles}")
+@bot.command(aliases=["g"])
+async def guild(context):
+	await context.send(f"The current guild (aka server) is {context.guild}")
+	await context.send(f"The current guild categories are {context.guild.categories}")
+	await context.send(f"The current guild roles are {context.guild.roles}")
+	# roles = {context.guild.roles.get_role()}
+	# for role in roles:
+	# 	await context.send(f"The current guild role is " + role)
+	#await context.send(f"The current guild roles are {context.guild.roles.mention('bot-testing', )}")
+	await context.send(f"The current guild region is {context.guild.region}")
+	await context.send(f"The current channel roles are {context.message.channel.changed_roles}")
+	await context.send(f"The current user roles are {context.message.author.roles}")
+
+# The current guild roles are [<Role id=417258901810184192 name='@everyone'>, <Role id=682347089279057983 name='Mops'>, <Role id=648435936656490497 name='FortressOnePugBot'>, <Role id=644655539640598549 name='Server Booster'>, <Role id=595880090131365888 name='bot-testing'>, <Role id=526634530283716619 name='Patreon'>, <Role id=500654379708186626 name='Streamcord'>, <Role id=486517134277607425 name='Zapier'>, <Role id=543039259133739028 name='east-asia'>, <Role id=533995292975038479 name='europe'>, <Role id=522695282887229440 name='north-america'>, <Role id=531050407246561280 name='south-america'>, <Role id=427655970177548288 name='oceania'>, <Role id=686568109280460928 name='corona-beerus'>, <Role id=681488106817585162 name='make-it-rain'>, <Role id=674003192505303072 name='huehuehue'>, <Role id=662555934832197635 name='drop2'>, <Role id=581438296094408728 name='clan-a'>, <Role id=522591630155317249 name='fab'>, <Role id=521544601467617280 name='DACC'>, <Role id=522591712606945290 name='SoBaR'>, <Role id=524461308553199626 name='media'>, <Role id=492880265190834187 name='content creators'>, <Role id=427656498332827659 name='developers'>, <Role id=427655861729492992 name='oztf legends'>, <Role id=672046872273092609 name='streamers'>, <Role id=586373595702362112 name='moderators'>, <Role id=513956098403991594 name='team'>, <Role id=475574448389619713 name='command bots'>]
 
 # https://discordpy.readthedocs.io/en/latest/api.html#role
 # https://discordpy.readthedocs.io/en/latest/api.html?#utility-functions
@@ -663,5 +710,5 @@ async def time(context):
 # async def gmt(context):
 # 	await context.send(context.message.author)
 
-# Token goes here. TODO change to environment variable.
+# Token goes here.
 bot.run(os.environ['FORTRESSONE_PUG_BOT_TOKEN'])
