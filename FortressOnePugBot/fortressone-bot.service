@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 # https://serverfault.com/a/413408
-Environment='FORTRESSONE_PUG_BOT_TOKEN=NjQzMDMxODMzNTM3NDEzMTIx.XcfkLA.LyvDQI9NpZB69RvFVGrdLgoU0T8'
+Environment="FORTRESSONE_PUG_BOT_TOKEN=$(cat /home/blindcant/python/FortressOnePugBot/bot-token.env)"
 Type=simple
 # the specific user that our service will run as
 User=blindcant
