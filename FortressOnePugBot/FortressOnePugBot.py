@@ -104,7 +104,8 @@ else:
 		"north-america",
 		"brazil",
 		"europe",
-		"east-asia"
+		"east-asia",
+		"pick-up-games" # for Action Quake 2
 	]
 
 all_pugs = {}
@@ -126,6 +127,8 @@ for channel in game_channels:
 		role_id = 646638599269384193
 	elif channel == "bot-testing-two":
 		role_id = 646645808053092362
+	elif channel == "pick-up-games":
+		role_id = None
 	else:
 		role_id = None
 
@@ -567,6 +570,11 @@ async def start_timer(context):
 	elif channel.name == 'east-asia':
 		all_pugs[channel.name]['timeoutTimes'].append("Tokyo/Seoul - " + (datetime.now(timezone(time_zones["jp_tokyo"])) +
 			timedelta(seconds=TIME_OUT_SECONDS)).strftime("%Y-%m-%d %H:%M:%S"))
+	elif channel.name == 'pick-up-games':
+		all_pugs[channel.name]['timeoutTimes'].append("Sydney - " + (datetime.now(timezone(time_zones["au_aedt"])) +
+			timedelta(seconds=TIME_OUT_SECONDS)).strftime("%Y-%m-%d %H:%M:%S"))
+		all_pugs[channel.name]['timeoutTimes'].append("Auckland - " + (datetime.now(timezone(time_zones["nz_auck"])) +
+			timedelta(seconds=TIME_OUT_SECONDS)).strftime("%Y-%m-%d %H:%M:%S"))
 	else:
 		all_pugs[channel.name]['timeoutTimes'].append("No one uses this here so fuck your time.")
 
@@ -641,12 +649,12 @@ async def endpug(context):
 	await end_pug_command(context, False)
 
 
-@bot.command(description="Join a team on the PUG for this channel.", aliases=["j"], help="Join team.")
+@bot.command(description="Join a team on the PUG for this channel.", aliases=["j", "joinski"], help="Join team.")
 async def join(context):
 	await join_pug_command(context)
 
 
-@bot.command(description="Leave a team on the PUG for this channel.", aliases=["l"], help="Leave PUG.")
+@bot.command(description="Leave a team on the PUG for this channel.", aliases=["l", "leaveski"], help="Leave PUG.")
 async def leave(context):
 	await leave_pug_command(context)
 
@@ -684,18 +692,18 @@ async def time(context):
 # 	await restart_timer(context)
 
 # https://discordpy.readthedocs.io/en/latest/api.html#guild
-@bot.command(aliases=["g"])
-async def guild(context):
-	await context.send(f"The current guild (aka server) is {context.guild}")
-	await context.send(f"The current guild categories are {context.guild.categories}")
-	await context.send(f"The current guild roles are {context.guild.roles}")
-	# roles = {context.guild.roles.get_role()}
-	# for role in roles:
-	# 	await context.send(f"The current guild role is " + role)
-	#await context.send(f"The current guild roles are {context.guild.roles.mention('bot-testing', )}")
-	await context.send(f"The current guild region is {context.guild.region}")
-	await context.send(f"The current channel roles are {context.message.channel.changed_roles}")
-	await context.send(f"The current user roles are {context.message.author.roles}")
+#@bot.command(aliases=["g"])
+#async def guild(context):
+#	await context.send(f"The current guild (aka server) is {context.guild}")
+#	await context.send(f"The current guild categories are {context.guild.categories}")
+#	await context.send(f"The current guild roles are {context.guild.roles}")
+#	roles = {context.guild.roles.get_role()}
+#	for role in roles:
+#		await context.send(f"The current guild role is " + role)
+#	await context.send(f"The current guild roles are {context.guild.roles.mention('bot-testing', )}")
+#	await context.send(f"The current guild region is {context.guild.region}")
+#	await context.send(f"The current channel roles are {context.message.channel.changed_roles}")
+#	await context.send(f"The current user roles are {context.message.author.roles}")
 
 # The current guild roles are [<Role id=417258901810184192 name='@everyone'>, <Role id=682347089279057983 name='Mops'>, <Role id=648435936656490497 name='FortressOnePugBot'>, <Role id=644655539640598549 name='Server Booster'>, <Role id=595880090131365888 name='bot-testing'>, <Role id=526634530283716619 name='Patreon'>, <Role id=500654379708186626 name='Streamcord'>, <Role id=486517134277607425 name='Zapier'>, <Role id=543039259133739028 name='east-asia'>, <Role id=533995292975038479 name='europe'>, <Role id=522695282887229440 name='north-america'>, <Role id=531050407246561280 name='south-america'>, <Role id=427655970177548288 name='oceania'>, <Role id=686568109280460928 name='corona-beerus'>, <Role id=681488106817585162 name='make-it-rain'>, <Role id=674003192505303072 name='huehuehue'>, <Role id=662555934832197635 name='drop2'>, <Role id=581438296094408728 name='clan-a'>, <Role id=522591630155317249 name='fab'>, <Role id=521544601467617280 name='DACC'>, <Role id=522591712606945290 name='SoBaR'>, <Role id=524461308553199626 name='media'>, <Role id=492880265190834187 name='content creators'>, <Role id=427656498332827659 name='developers'>, <Role id=427655861729492992 name='oztf legends'>, <Role id=672046872273092609 name='streamers'>, <Role id=586373595702362112 name='moderators'>, <Role id=513956098403991594 name='team'>, <Role id=475574448389619713 name='command bots'>]
 

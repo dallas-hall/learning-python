@@ -1,0 +1,6 @@
+# Old way
+source .venv/bin/activate
+python FortressOnePugBot.py &> bot.log &
+
+# New way
+systemctl start fortressone-bot.service

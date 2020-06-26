@@ -1,0 +1,30 @@
+[Unit]
+Description=FortressOne PUG Bot
+After=network.target
+
+[Service]
+# https://serverfault.com/a/413408
+Environment='FORTRESSONE_PUG_BOT_TOKEN=NjQzMDMxODMzNTM3NDEzMTIx.XcfkLA.LyvDQI9NpZB69RvFVGrdLgoU0T8'
+Type=simple
+# the specific user that our service will run as
+User=blindcant
+Group=blindcant
+# see http://0pointer.net/blog/dynamic-users-with-systemd.html
+#RuntimeDirectory=FortressOnePugBot
+#WorkingDirectory=/home/blindcant/python
+# https://stackoverflow.com/a/37211676
+# We need - here to SELinux doesn't block the running from the Python venv.
+ExecStart=/home/blindcant/python/FortressOnePugBot/.venv/bin/python /home/blindcant/python/FortressOnePugBot/FortressOnePugBot.py
+ExecReload=/bin/kill -s HUP $MAINPID
+PrivateTmp=true
+# https://medium.com/@benmorel/creating-a-linux-service-with-systemd-611b5c8b91d6
+Restart=always
+RestartSec=1
+# https://stackoverflow.com/a/43830129
+# https://github.com/systemd/systemd/pull/7198
+StandardInput=file:/home/blindcant/python/FortressOnePugBot/bot.log
+StandardOutput=file:/home/blindcant/python/FortressOnePugBot/bot.log
+StandardError=file:/home/blindcant/python/FortressOnePugBot/bot.log
+
+[Install]
+WantedBy=multi-user.target
