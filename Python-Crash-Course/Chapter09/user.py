@@ -10,7 +10,9 @@ class User:
 		self.password = password
 		self.email = email
 		self.join_date = join_date
-		self.last_login_date = self.join_date
+		self.last_login_date = None
+		self.successful_logins = 0
+		self.failed_logins = 0
 
 	def get_name(self):
 		return self.name
@@ -36,5 +38,19 @@ class User:
 		if self.email == email and self.password == password:
 			print(f"Welcome {self.name}.")
 			self.last_login_date = datetime.now(timezone("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")
+			self.add_successful_login()
 		else:
 			print(f"Incorrect email and/or password.")
+			self.add_failed_login()
+
+	def get_successful_logins(self):
+		return self.successful_logins
+
+	def add_successful_login(self):
+		self.successful_logins += 1
+
+	def get_failed_logins(self):
+		return self.failed_logins
+
+	def add_failed_login(self):
+		self.failed_logins += 1

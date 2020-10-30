@@ -21,6 +21,9 @@ users = [
 	User("Bob", "password", "bob@gmail.com")
 ]
 
+# Increment Alice's successful login counter
+users[0].login("alice@gmail.com", "abc123")
+
 for user in users:
 	print(f"The current user's name is {user.name}.")
 	print(f"The current user's password is {user.password}. Yeah, we store passwords in plaintext, YOLO.")
@@ -30,10 +33,16 @@ for user in users:
 		user.login("alice@gmail.com", "abc123")
 	else:
 		user.login("bob@gmail.com", "passw0rd")
-	print(f"The current user's last login date is {user.last_login_date}.")
+	if user.last_login_date is not None:
+		print(f"The current user's last login date is {user.last_login_date}.")
+	else:
+		print(f"The current user has never logged in.")
 	if type(user) is admin.Admin:
 		if user.os_privileges.is_linux_admin():
 			print("This user can administrate Linux")
 		if user.os_privileges.is_windows_admin():
 			print("This user can administrate Windows")
+	print(f"The current amount of successful logins for {user.get_name()} is {user.get_successful_logins()}")
+	print(f"The current amount of failed logins for {user.get_name()} is {user.get_failed_logins()}")
+
 
