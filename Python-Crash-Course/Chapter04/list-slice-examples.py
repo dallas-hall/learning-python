@@ -25,7 +25,7 @@ print("Printing the first half and second half slices of the list.")
 print(digits[:len(digits) // 2])
 # Leaving out the second part of the slice finishes at the end
 print(digits[len(digits) // 2:])
-print("Printing the last items.")
+print("Printing the last 3 items.")
 print(digits[-3:])
 print("Print every second item of the first half of the list.")
 print(digits[:len(digits) // 2:2])
@@ -35,3 +35,9 @@ print(digits[len(digits) // 2::2])
 print("Using a slice in a for loop")
 for n in digits[:len(digits) // 2]:
 	print(n)
+
+print("Copying the entire list via a slice [:]")
+new_digits = digits[:]
+for i in range(len(digits)):
+	digits[i] = digits[i] * 2
+	print(digits[i])
