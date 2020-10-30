@@ -59,5 +59,13 @@ class Battery:
 
 car1 = Car("Ford", "Falcon", "1999")
 print(car1.get_details())
+
 car2 = ElectricCar("Tesla", "Roadster", "2018")
+print(car2.get_details())
+print("Driving car.")
+car2.battery.update_battery_charge(50)
+print(car2.get_details())
+print("Charging car.")
+for i in range(1, 31):
+	car2.battery.charge_battery()
 print(car2.get_details())
