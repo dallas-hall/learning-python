@@ -6,6 +6,9 @@ import time
 
 import pygame
 
+# Import from settings.py the class Settings
+from settings import Settings
+
 # Define logging output
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
 
@@ -24,11 +27,16 @@ class AlienInvasion:
 	def __init__(self):
 		"""Initialise the game and its resources"""
 		pygame.init()
-		self.screen = pygame.display.set_mode((1200, 800))
-		pygame.display.set_caption("Alien Invasion")
-
+		# Create a settings object from our Settings class
+		self.settings = Settings()
+		# Change the screen dimensions
+		self.screen = pygame.display.set_mode(
+			(self.settings.screen_width, self.settings.screen_height)
+		)
+		# Change the window captaion
+		pygame.display.set_caption(self.settings.window_caption)
 		# Change the screen from default black
-		self.bg_color = (230, 230, 230)
+		self.bg_color = (self.settings.bg_color)
 
 	def run_game(self):
 		"""Start the main loop for the game."""
