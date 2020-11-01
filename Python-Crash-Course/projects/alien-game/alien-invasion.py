@@ -46,19 +46,47 @@ class AlienInvasion:
 	def run_game(self):
 		"""Start the main loop for the game."""
 		while True:
-			# Watch for keyboard and mouse events.
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					sys.exit()
+			self._check_events()
+			self.ship.update_position()
+			self._update_screen()
 
-			# Redraw the screen during each pass through the loop, changing the colour
-			self.screen.fill(self.bg_color)
+	def _check_events(self):
+		"""Respond to player driven events."""
+		# Watch for keyboard and mouse events.
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				sys.exit()
+			# Key pressed down
+			elif event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_RIGHT:
+					self.ship.moving_right = True
+				if event.key == pygame.K_LEFT:
+					self.ship.moving_left = True
+				if event.key == pygame.K_UP:
+					self.ship.moving_up = True
+				if event.key == pygame.K_DOWN:
+					self.ship.moving_down = True
+			# Key released
+			elif event.type == pygame.KEYUP:
+				if event.key == pygame.K_RIGHT:
+					self.ship.moving_right = False
+				if event.key == pygame.K_LEFT:
+					self.ship.moving_left = False
+				if event.key == pygame.K_UP:
+					self.ship.moving_up = False
+				if event.key == pygame.K_DOWN:
+					self.ship.moving_down = False
 
-			# Draw the player's ship ontop of the filled background
-			self.ship.blit_me()
+	def _update_screen(self):
+		"""Update images on the screen."""
+		# Redraw the screen during each pass through the loop, changing the colour
+		self.screen.fill(self.bg_color)
 
-			# Make the most recently drawn screen visible
-			pygame.display.flip()
+		# Draw the player's ship ontop of the filled background
+		self.ship.blit_me()
+
+		# Make the most recently drawn screen visible
+		pygame.display.flip()
 
 
 # If this program is run as the driver program, then launch the game.
