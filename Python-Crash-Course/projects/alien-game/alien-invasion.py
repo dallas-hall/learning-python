@@ -8,6 +8,8 @@ import pygame
 
 # Import from settings.py the class Settings
 from settings import Settings
+# Import the player's ship
+from ship import Ship
 
 # Define logging output
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
@@ -33,10 +35,13 @@ class AlienInvasion:
 		self.screen = pygame.display.set_mode(
 			(self.settings.screen_width, self.settings.screen_height)
 		)
-		# Change the window captaion
+		# Change the window caption
 		pygame.display.set_caption(self.settings.window_caption)
 		# Change the screen from default black
 		self.bg_color = (self.settings.bg_color)
+
+		# Add the player's ship and pass in the current game instance
+		self.ship = Ship(self)
 
 	def run_game(self):
 		"""Start the main loop for the game."""
@@ -48,6 +53,9 @@ class AlienInvasion:
 
 			# Redraw the screen during each pass through the loop, changing the colour
 			self.screen.fill(self.bg_color)
+
+			# Draw the player's ship ontop of the filled background
+			self.ship.blit_me()
 
 			# Make the most recently drawn screen visible
 			pygame.display.flip()
