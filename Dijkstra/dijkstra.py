@@ -1,11 +1,9 @@
 #!/bin/python3
+import json
 import logging
 import os
-import pprint
 import sys
 import time
-
-from graph_node import GraphNode
 
 # Define logging output
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
@@ -21,7 +19,7 @@ time.sleep(.010)
 
 # https://www.tutorialspoint.com/data_structures_algorithms/graph_data_structure.htm
 # Graph vertices. This graph is directed as there is only one edge between vertices.
-start_graph = {
+graph = {
 	'A': [('B', 1), ('C', 4)],
 	'B': [('A', 1), ('C', 1), ('D', 9), ('G', 2), ('H', 10)],
 	'C': [('A', 4), ('B', 1), ('D', 7), ('E', 3)],
@@ -32,40 +30,45 @@ start_graph = {
 	'H': [('B', 10), ('G', 8)]
 }
 
-nodes = {}
-travel_start_node = 'G'
-travel_end_node = 'E'
-visited_vertices = ()
-current_path = ''
 allowed_hops = 1
+start_node = 'A'
+end_node = 'H'
+dijsktra_output = {
+	'start node': 'G',
+	'end node': 'E',
+	'all nodes': {},
+	'visited vertices': ()
+}
 
 
 def create_graph_nodes():
 	# Create the graph nodes using ASCII numbers
-	for c in range(ord('A'), ord('I')):
-		nodes[chr(c)] = GraphNode(chr(c))
+	for c in range(ord('A'), ord('H') + 1):
+		dijsktra_output['all nodes'][chr(c)] = {}
 
 
 def create_graph_edges():
-	for c in range(ord('A'), ord('I')):
-		node = nodes[chr(c)]
+	for c in range(ord('A'), ord('H') + 1):
+		current_node = dijsktra_output['all nodes'][chr(c)]
+		current_node['linked nodes'] = {
+
+		}
 		# Get the edge nodes
-		for e in range(len(start_graph.get(chr(c)))):
+		for e in range(len(graph.get(chr(c)))):
 			# 0 = name
-			# 1 = node pointer
-			# 2 = cost
-			node.set_connected_node(
-				start_graph.get(chr(c))[e][0],
-				nodes.get(start_graph.get(chr(c))[e][0]),
-				start_graph.get(chr(c))[e][1]
-			)
-		if debugging:
-			print(nodes.get(chr(c)).get_name() + " is " + str(nodes.get(chr(c))))
-			pprint.pprint(nodes.get(chr(c)).get_connected_nodes())
+			# 1 = cost
+			current_node['linked nodes'][graph.get(chr(c))[e][0]] = {
+				'cost': graph.get(chr(c))[e][1]
+			}
 
 
-create_graph_nodes()
-create_graph_edges()
+# 	dijsktra_output['all nodes'][chr(c)]['pointer'].set_connected_node(node)
+#
+# if debugging:
+# 	print(dijsktra_output['all nodes'].get(chr(c)).get_name() + " is " + str(
+# 		dijsktra_output['all nodes'].get(chr(c))))
+# 	pprint.pprint(dijsktra_output['all nodes'].get(chr(c)).get_connected_nodes())
+
 
 # Dijkstra formula
 #
@@ -86,6 +89,12 @@ create_graph_edges()
 # 2) Get next directly connected node
 #   a) On the current line, find the next directly connected node that isn't in T and has a least cost path that isn't infinity
 #   b) Update T with the current directly connected node from the current line.
-#   c) Create the next line and calculate L(n) and the paths for all directly connected nodes, excluding the current path. Only cheaper paths are updated.
+#   c) Create the next line in the table and calculate L(n) and the paths for all directly connected nodes, excluding the current path. Only cheaper paths are updated.
 # 3) Repeat 2 until finished.
+def dijsktra():
+	print(json.dumps(dijsktra_output, indent=2))
 
+
+create_graph_nodes()
+create_graph_edges()
+dijsktra()
