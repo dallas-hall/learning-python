@@ -14,7 +14,7 @@ from discord.ext import tasks
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
 
 # Enable debugging messages
-debugging = True
+debugging = False
 if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
@@ -46,11 +46,11 @@ if debugging:
 	pprint(subreddits)
 else:
 	for k in subreddits['SFW']:
-		if subreddits['SFW'][k] == 'funny' or subreddits['SFW'][k] == 'memes' or subreddits['SFW'][k] == 'TikTokCringe':
+		if k == 'funny' or k == 'memes' or k == 'TikTokCringe':
 			subreddits['SFW'][k]['discordChannel'] = 'meme-spew'
-		elif subreddits['SFW'][k] == 'linuxmasterrace':
+		elif k == 'linuxmasterrace':
 			subreddits['SFW'][k]['discordChannel'] = 'linux-guru'
-		elif subreddits['SFW'][k] == 'ProgrammerHumor':
+		elif k == 'ProgrammerHumor':
 			subreddits['SFW'][k]['discordChannel'] = 'code-review'
 	for k in subreddits['NSFW']:
 		subreddits['NSFW'][k]['discordChannel'] = 'nsfw-view'
@@ -61,7 +61,7 @@ else:
 REDDIT_API_CLIENT_ID = os.environ['REDDIT_API_CLIENT_ID']
 REDDIT_API_CLIENT_SECRET = os.environ['REDDIT_API_CLIENT_SECRET']
 REDDIT_API_CLIENT_USER_AGENT = os.environ['REDDIT_API_CLIENT_USER_AGENT']
-REDDIT_URL = 'https://reddit.com/'
+REDDIT_URL = 'https://reddit.com'
 REDDIT_POST_RETURN_LIMIT = 1
 
 # https://praw.readthedocs.io/en/v7.2.0/getting_started/quick_start.html#read-only-reddit-instances
@@ -102,7 +102,8 @@ async def get_content():
 				if channel.name == desired_channel:
 					post_channel_id = discordBot.get_channel(channel.id)
 					# await post_channel_id.send(REDDIT_URL + submission.permalink)
-					await post_channel_id.send(submission.url)
+					# https://www.reddit.com/r/discordapp/comments/4be938/tip_want_link_without_preview_use_backslash_after/
+					await post_channel_id.send(f'<{REDDIT_URL + submission.permalink}>\n{submission.url}')
 					break
 
 	for subreddit in subreddits['NSFW']:
@@ -119,7 +120,7 @@ async def get_content():
 				if channel.name == desired_channel:
 					post_channel_id = discordBot.get_channel(channel.id)
 					# await post_channel_id.send(REDDIT_URL + submission.permalink)
-					await post_channel_id.send(submission.url)
+					await post_channel_id.send(f'<{REDDIT_URL + submission.permalink}>\n{submission.url}')
 					break
 
 
