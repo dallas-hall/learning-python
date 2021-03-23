@@ -128,8 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Discord Bot tokens
-bot-tokens
+# All bot tokens
+bot-tokens.env
 
 # PyCharm
 .idea/
