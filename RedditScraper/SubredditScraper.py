@@ -7,6 +7,7 @@ from pprint import pprint
 
 import asyncpraw
 import discord
+from asyncprawcore.exceptions import AsyncPrawcoreException
 from discord.ext import commands
 from discord.ext import tasks
 
@@ -14,7 +15,7 @@ from discord.ext import tasks
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
 
 # Enable debugging messages
-debugging = False
+debugging = True
 if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
@@ -62,7 +63,7 @@ REDDIT_API_CLIENT_ID = os.environ['REDDIT_API_CLIENT_ID']
 REDDIT_API_CLIENT_SECRET = os.environ['REDDIT_API_CLIENT_SECRET']
 REDDIT_API_CLIENT_USER_AGENT = os.environ['REDDIT_API_CLIENT_USER_AGENT']
 REDDIT_URL = 'https://reddit.com'
-REDDIT_SFW_POST_RETURN_LIMIT = 1
+REDDIT_SFW_POST_RETURN_LIMIT = 3
 REDDIT_NSFW_POST_RETURN_LIMIT = 1
 
 # https://praw.readthedocs.io/en/v7.2.0/getting_started/quick_start.html#read-only-reddit-instances
@@ -89,40 +90,49 @@ DISCORD_GUILD_ID = 251648924060876801
 async def get_content():
 	logging.info('During task loop.')
 	guild = discordBot.get_guild(DISCORD_GUILD_ID)
+
 	for subreddit in subreddits['SFW']:
 		logging.debug('Processing safe for work sub-reddits.')
 		current_subreddit = await reddit.subreddit(subreddit)
 		# https://praw.readthedocs.io/en/v7.2.0/code_overview/models/subreddit.html?highlight=top#praw.models.Subreddit.top
-		async for submission in current_subreddit.top("day", limit=REDDIT_SFW_POST_RETURN_LIMIT):
-			# https://praw.readthedocs.io/en/v7.2.0/code_overview/models/submission.html?highlight=submission#praw.models.Submission
-			print(submission.title)
-			print(REDDIT_URL + submission.permalink)
-			print(submission.url)
-			desired_channel = subreddits['SFW'][subreddit]['discordChannel']
-			for channel in guild.channels:
-				if channel.name == desired_channel:
-					post_channel_id = discordBot.get_channel(channel.id)
-					# await post_channel_id.send(REDDIT_URL + submission.permalink)
-					# https://www.reddit.com/r/discordapp/comments/4be938/tip_want_link_without_preview_use_backslash_after/
-					await post_channel_id.send(f'<{REDDIT_URL + submission.permalink}>\n{submission.url}')
-					break
+		try:
+			async for submission in current_subreddit.top("day", limit=REDDIT_SFW_POST_RETURN_LIMIT):
+				# https://praw.readthedocs.io/en/v7.2.0/code_overview/models/submission.html?highlight=submission#praw.models.Submission
+				print(submission.title)
+				print(REDDIT_URL + submission.permalink)
+				print(submission.url)
+				desired_channel = subreddits['SFW'][subreddit]['discordChannel']
+				for channel in guild.channels:
+					if channel.name == desired_channel:
+						post_channel_id = discordBot.get_channel(channel.id)
+						# await post_channel_id.send(REDDIT_URL + submission.permalink)
+						# https://www.reddit.com/r/discordapp/comments/4be938/tip_want_link_without_preview_use_backslash_after/
+						await post_channel_id.send(f'<{REDDIT_URL + submission.permalink}>\n{submission.url}')
+						break
+		except AsyncPrawcoreException:
+			logging.error('Something bad happened with ' + subreddit)
+			continue
 
 	for subreddit in subreddits['NSFW']:
 		logging.debug('Processing not safe for work sub-reddits.')
 		current_subreddit = await reddit.subreddit(subreddit)
 		# https://praw.readthedocs.io/en/v7.2.0/code_overview/models/subreddit.html?highlight=top#praw.models.Subreddit.top
-		async for submission in current_subreddit.top("day", limit=REDDIT_NSFW_POST_RETURN_LIMIT):
-			# https://praw.readthedocs.io/en/v7.2.0/code_overview/models/submission.html?highlight=submission#praw.models.Submission
-			print(submission.title)
-			print(REDDIT_URL + submission.permalink)
-			print(submission.url)
-			desired_channel = subreddits['NSFW'][subreddit]['discordChannel']
-			for channel in guild.channels:
-				if channel.name == desired_channel:
-					post_channel_id = discordBot.get_channel(channel.id)
-					# await post_channel_id.send(REDDIT_URL + submission.permalink)
-					await post_channel_id.send(f'<{REDDIT_URL + submission.permalink}>\n{submission.url}')
-					break
+		try:
+			async for submission in current_subreddit.top("day", limit=REDDIT_NSFW_POST_RETURN_LIMIT):
+				# https://praw.readthedocs.io/en/v7.2.0/code_overview/models/submission.html?highlight=submission#praw.models.Submission
+				print(submission.title)
+				print(REDDIT_URL + submission.permalink)
+				print(submission.url)
+				desired_channel = subreddits['NSFW'][subreddit]['discordChannel']
+				for channel in guild.channels:
+					if channel.name == desired_channel:
+						post_channel_id = discordBot.get_channel(channel.id)
+						# await post_channel_id.send(REDDIT_URL + submission.permalink)
+						await post_channel_id.send(f'<{REDDIT_URL + submission.permalink}>\n{submission.url}')
+						break
+		except AsyncPrawcoreException:
+			logging.error('Something bad happened with ' + subreddit)
+			continue
 
 
 @get_content.before_loop
