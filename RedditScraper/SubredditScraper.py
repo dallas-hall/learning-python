@@ -15,7 +15,7 @@ from discord.ext import tasks
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
 
 # Enable debugging messages
-debugging = True
+debugging = False
 if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
@@ -82,7 +82,7 @@ discordBot = commands.Bot(
 )
 
 discordBot.description = f"Reddit scraper."
-DISCORD_GUILD_ID = 251648924060876801
+DISCORD_GUILD_ID = os.environ['MY_DISCORD_SERVER_GUILD_ID']
 
 
 # https://stackoverflow.com/questions/56122336/discord-py-rewrite-setting-up-background-tasks-background-tasks-not-loading
