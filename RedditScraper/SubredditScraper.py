@@ -62,7 +62,8 @@ REDDIT_API_CLIENT_ID = os.environ['REDDIT_API_CLIENT_ID']
 REDDIT_API_CLIENT_SECRET = os.environ['REDDIT_API_CLIENT_SECRET']
 REDDIT_API_CLIENT_USER_AGENT = os.environ['REDDIT_API_CLIENT_USER_AGENT']
 REDDIT_URL = 'https://reddit.com'
-REDDIT_POST_RETURN_LIMIT = 1
+REDDIT_SFW_POST_RETURN_LIMIT = 1
+REDDIT_NSFW_POST_RETURN_LIMIT = 1
 
 # https://praw.readthedocs.io/en/v7.2.0/getting_started/quick_start.html#read-only-reddit-instances
 reddit = asyncpraw.Reddit(
@@ -92,7 +93,7 @@ async def get_content():
 		logging.debug('Processing safe for work sub-reddits.')
 		current_subreddit = await reddit.subreddit(subreddit)
 		# https://praw.readthedocs.io/en/v7.2.0/code_overview/models/subreddit.html?highlight=top#praw.models.Subreddit.top
-		async for submission in current_subreddit.top("day", limit=REDDIT_POST_RETURN_LIMIT):
+		async for submission in current_subreddit.top("day", limit=REDDIT_SFW_POST_RETURN_LIMIT):
 			# https://praw.readthedocs.io/en/v7.2.0/code_overview/models/submission.html?highlight=submission#praw.models.Submission
 			print(submission.title)
 			print(REDDIT_URL + submission.permalink)
@@ -110,7 +111,7 @@ async def get_content():
 		logging.debug('Processing not safe for work sub-reddits.')
 		current_subreddit = await reddit.subreddit(subreddit)
 		# https://praw.readthedocs.io/en/v7.2.0/code_overview/models/subreddit.html?highlight=top#praw.models.Subreddit.top
-		async for submission in current_subreddit.top("day", limit=REDDIT_POST_RETURN_LIMIT):
+		async for submission in current_subreddit.top("day", limit=REDDIT_NSFW_POST_RETURN_LIMIT):
 			# https://praw.readthedocs.io/en/v7.2.0/code_overview/models/submission.html?highlight=submission#praw.models.Submission
 			print(submission.title)
 			print(REDDIT_URL + submission.permalink)
