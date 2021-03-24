@@ -82,7 +82,7 @@ discordBot = commands.Bot(
 )
 
 discordBot.description = f"Reddit scraper."
-DISCORD_GUILD_ID = os.environ['MY_DISCORD_SERVER_GUILD_ID']
+DISCORD_GUILD_ID = int(os.environ['MY_DISCORD_SERVER_GUILD_ID'])
 
 
 # https://stackoverflow.com/questions/56122336/discord-py-rewrite-setting-up-background-tasks-background-tasks-not-loading
