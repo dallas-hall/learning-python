@@ -28,7 +28,7 @@ subreddits = {
 		'linuxmasterrace': {},
 		'memes': {},
 		'ProgrammerHumor': {},
-		'TikTokCringe': {}
+#		'TikTokCringe': {}
 	},
 	"NSFW": {
 		'AsianCumSluts': {},
@@ -47,7 +47,7 @@ if debugging:
 	pprint(subreddits)
 else:
 	for k in subreddits['SFW']:
-		subreddits['SFW'][k]['discordChannel'] = 'reddit-spam-pew-pew'
+		subreddits['SFW'][k]['discordChannel'] = 'meme-spew'
 	for k in subreddits['NSFW']:
 		subreddits['NSFW'][k]['discordChannel'] = 'nsfw-view'
 	pprint(subreddits)
@@ -58,7 +58,7 @@ REDDIT_API_CLIENT_ID = os.environ['REDDIT_API_CLIENT_ID']
 REDDIT_API_CLIENT_SECRET = os.environ['REDDIT_API_CLIENT_SECRET']
 REDDIT_API_CLIENT_USER_AGENT = os.environ['REDDIT_API_CLIENT_USER_AGENT']
 REDDIT_URL = 'https://reddit.com'
-REDDIT_SFW_POST_RETURN_LIMIT = 1
+REDDIT_SFW_POST_RETURN_LIMIT = 3
 REDDIT_NSFW_POST_RETURN_LIMIT = 1
 
 # https://praw.readthedocs.io/en/v7.2.0/getting_started/quick_start.html#read-only-reddit-instances
