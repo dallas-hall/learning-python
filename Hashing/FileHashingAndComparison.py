@@ -1,6 +1,12 @@
 #!/usr/bin/python3
 
-import logging, sys, os, time, re, hashlib, json, shutil
+import hashlib
+import json
+import logging
+import re
+import shutil
+import sys
+import time
 from pathlib import Path
 
 
@@ -15,24 +21,6 @@ def check_answer(message):
 			return 'n'
 		else:
 			print('Invalid input, try again.')
-
-
-def get_input_path():
-	while True:
-		print('Enter the input path of the files to hash. Relative and canonical paths will be transformed into aboslute paths.')
-		answer = get_absolute_path(input())
-		result = check_answer('Input path is\n' + str(answer) + '\nIs this correct?')
-		if result == 'y':
-			return answer
-
-
-def get_output_path():
-	while True:
-		print('Enter the output path of the files to hash. Relative and canonical paths will be transformed into aboslute paths.')
-		answer = get_absolute_path(input())
-		result = check_answer('Output path is\n' + str(answer) + '\nIs this correct?')
-		if result == 'y':
-			return answer
 
 
 def get_hashing_algorithm():
@@ -67,50 +55,57 @@ def get_absolute_path(path):
 
 
 def get_file_hash(algorithm, data):
-	if debugging:
-		hashing_algorithm = hashlib.new(algorithm)
-		hashing_algorithm.update(data)
-		logging.debug('(long) hash is ' + hashing_algorithm.hexdigest())
-		hashing_algorithm = hashlib.new(algorithm, data).hexdigest()
-		logging.debug('(short) hash is ' + hashing_algorithm)
+	if GLOBAL_DEBUGGING:
+		hashing_algorithm_local = hashlib.new(algorithm)
+		hashing_algorithm_local.update(data)
+		logging.debug('(long) hash is ' + hashing_algorithm_local.hexdigest())
+		hashing_algorithm_local = hashlib.new(algorithm, data).hexdigest()
+		logging.debug('(short) hash is ' + hashing_algorithm_local)
 	return hashlib.new(algorithm, data).hexdigest()
 
 
 def hash_files(algorithm):
-	logging.info('Hashing files in ' + str(input_path))
+	logging.info('Hashing files in ' + str(INPUT_PATHS))
 	time.sleep(.005)
 
-	for file in Path(input_path).iterdir():
-		#hash_output = hashlib.new(algorithm, Path(file).read_bytes()).hexdigest()
-		if Path.is_dir(Path(file)):
-			continue
-		hash_output = get_file_hash(algorithm, Path(file).read_bytes())
-		if hashed_files == {} or hash_output not in hashed_files:
-			hashed_files[hash_output] = {
-				'filenames': [file.name]
-			}
-		else:
-			hashed_files[hash_output]['filenames'].append(file.name)
+	for input_path in INPUT_PATHS:
+		if GLOBAL_DEBUGGING:
+			logging.debug("input_path is: " + input_path)
 
-		if debugging:
-			logging.debug(file)
-			logging.debug(file.name)
-			logging.debug(str(file) + ' is\n' + hash_output)
+		# https://docs.python.org/3/library/pathlib.html#pathlib.Path.glob
+		all_paths = sorted(Path(input_path).glob('**/*'))
+		for path in all_paths:
+			if Path(path).is_dir():
+				continue
+			hash_output = get_file_hash(algorithm, Path(path).read_bytes())
+			if hashed_files == {} or hash_output not in hashed_files:
+				hashed_files[hash_output] = {
+					'filenames': [str(path)]
+				}
+			else:
+				hashed_files[hash_output]['filenames'].append(str(path))
 
-	if debugging:
+			if GLOBAL_DEBUGGING:
+				logging.debug(path)
+				logging.debug(path.name)
+				logging.debug(str(path) + ' is\n' + hash_output)
+
+	if GLOBAL_DEBUGGING:
 		logging.debug(str(hashed_files))
 
 
-def copy_unique_files_to_output():
-	logging.info('Saving unique hashed files to ' + str(output_path))
+def write_output():
+	logging.info('Saving unique hashed files to ' + str(OUTPUT_PATH))
 	time.sleep(.005)
-	with open(output_path / 'file_metadata.txt', 'wt') as metadata_file:
+	with open(OUTPUT_PATH / 'file_metadata.txt', 'wt') as metadata_file:
 		metadata_file.write(hashing_algorithm + '_hash\tfiles\n')
 		for file_hash, file_list in hashed_files.items():
-			shutil.copy(input_path / file_list['filenames'][0], output_path / file_list['filenames'][0])
+			if SAVE_UNIQUE_FILES:
+				# https://docs.python.org/3/library/pathlib.html#pathlib.PurePath.parts
+				shutil.copy(file_list['filenames'][0], OUTPUT_PATH / str(Path(file_list['filenames'][0]).parts[-1]))
 			# https://stackoverflow.com/a/35119046 & https://stackoverflow.com/a/54345555
-			metadata_file.write(str(file_hash) + '\t' + ','.join(file_list['filenames']) + '\n')
-			if debugging:
+			metadata_file.write(str(file_hash) + '\t' + DELIMITER.join(file_list['filenames']) + '\n')
+			if GLOBAL_DEBUGGING:
 				time.sleep(.005)
 				logging.debug('hash is ' + str(hash))
 				logging.debug('file list is ' + str(file_list))
@@ -120,36 +115,56 @@ def copy_unique_files_to_output():
 					logging.debug('for file ' + str(file_list[files]))
 
 
-# Define logging and pretty print output
+#
+# Program
+#
+# Define logging output
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
 
-# Enable debugging messages
-debugging = True
-if not debugging:
+# Enable GLOBAL_DEBUGGING messages
+GLOBAL_DEBUGGING = True
+if not GLOBAL_DEBUGGING:
 	logging.disable(logging.DEBUG)
-# Print start message and delay slightly	
-logging.info('Starting ' + os.path.relpath(sys.argv[0]))
+
+# https://docs.python.org/3/library/pathlib.html#pathlib.Path.cwd
+SCRIPT_PATH = Path.cwd()
+# https://docs.python.org/3/library/sys.html#sys.argv
+SCRIPT_NAME = Path(sys.argv[0]).name
+
+# Using https://www.asciitable.com/ control character 31 as a delimiter
+DELIMITER = chr(31)
+INPUT_PATHS = [
+	'/home/blindcant/Development/python/Hashing/input1',
+	'/home/blindcant/Development/python/Hashing/input2'
+]
+OUTPUT_PATH = Path(SCRIPT_PATH / 'output')
+SAVE_UNIQUE_FILES = False
+
+logging.info('Starting ' + SCRIPT_NAME)
+# Quick delay so the messages are printed in the correct order
 time.sleep(.005)
+if GLOBAL_DEBUGGING:
+	logging.debug("SCRIPT_PATH = " + str(SCRIPT_PATH))
+	logging.debug("SCRIPT_NAME = " + SCRIPT_NAME)
 
 # System available hashing algorithms.
 available_hash_algorithms = sorted(hashlib.algorithms_available)
+hashing_algorithm = get_hashing_algorithm()
 
 # Get user answers for paths and hashing algorithm
-input_path = get_input_path()
-output_path = get_output_path()
-if not Path.exists(output_path):
-	Path.mkdir(output_path)
-hashing_algorithm = get_hashing_algorithm()
-if debugging:
+if not Path.exists(OUTPUT_PATH):
+	Path.mkdir(OUTPUT_PATH)
+
+if GLOBAL_DEBUGGING:
 	time.sleep(.005)
-	logging.debug('input_path is\n' + str(input_path))
-	logging.debug('output_path is\n' + str(output_path))
+	logging.debug('input_path is\n' + str(INPUT_PATHS))
+	logging.debug('OUTPUT_PATH is\n' + str(OUTPUT_PATH))
 	logging.debug('hashing_algorithm is\n' + str(hashing_algorithm))
 
 # Hash all files in the base directory of the input_path (no recursive file walking)
 hashed_files = {}
 hash_files(hashing_algorithm)
-if debugging:
+if GLOBAL_DEBUGGING:
 	time.sleep(.005)
 	logging.debug(json.dumps(hashed_files, indent=4, sort_keys=False))
-copy_unique_files_to_output()
+write_output()
