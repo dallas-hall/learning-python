@@ -28,7 +28,7 @@ subreddits = {
 		'linuxmasterrace': {},
 		'memes': {},
 		'ProgrammerHumor': {},
-		'TikTokCringe': {}
+#		'TikTokCringe': {}
 	},
 	"NSFW": {
 		'AsianCumSluts': {},
@@ -47,12 +47,7 @@ if debugging:
 	pprint(subreddits)
 else:
 	for k in subreddits['SFW']:
-		if k == 'funny' or k == 'memes' or k == 'TikTokCringe':
-			subreddits['SFW'][k]['discordChannel'] = 'meme-spew'
-		elif k == 'linuxmasterrace':
-			subreddits['SFW'][k]['discordChannel'] = 'linux-guru'
-		elif k == 'ProgrammerHumor':
-			subreddits['SFW'][k]['discordChannel'] = 'code-review'
+		subreddits['SFW'][k]['discordChannel'] = 'meme-spew'
 	for k in subreddits['NSFW']:
 		subreddits['NSFW'][k]['discordChannel'] = 'nsfw-view'
 	pprint(subreddits)
