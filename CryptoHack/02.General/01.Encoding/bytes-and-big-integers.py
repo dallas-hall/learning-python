@@ -1,10 +1,30 @@
 #!/usr/bin/env python3
 
-# https://pycryptodome.readthedocs.io/en/latest/
-from Crypto.Util.number import bytes_to_long, long_to_bytes
+# FOURTH CHALLENGE
 
-# Cryptosystems like RSA works on numbers, but messages are made up of characters. How should we convert our messages into numbers so that mathematical operations can be applied?
-# The most common way is to take the ordinal bytes of the message, convert them into hexadecimal, and concatenate. This can be interpreted as a base-16 number, and also represented in base-10. To illustrate:
+import logging
+import os
+import sys
+import time
+
+# https://pycryptodome.readthedocs.io/en/latest/
+from Crypto.Util.number import long_to_bytes
+
+# Define logging output
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
+
+# Enable debugging messages
+debugging = True
+if not debugging:
+	logging.disable(logging.DEBUG)
+# Print start message and delay slightly
+logging.info('Starting ' + os.path.relpath(sys.argv[0]))
+time.sleep(.001)
+
+# Cryptosystems like RSA works on numbers, but messages are made up of characters. How should we convert our messages
+# into numbers so that mathematical operations can be applied? The most common way is to take the ordinal bytes of the
+# message, convert them into hexadecimal, and concatenate. This can be interpreted as a base-16 number, and also
+# represented in base-10. To illustrate:
 #
 # message: HELLO
 # ascii bytes: [72, 69, 76, 76, 79]
@@ -23,4 +43,3 @@ print(binary_str)
 
 flag = binary_str.decode()
 print(flag)
-
