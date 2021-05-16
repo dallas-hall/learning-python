@@ -1,5 +1,9 @@
 #!/usr/bin/python3
+
+# FIRST CHALLENGE
+
 import logging
+import math
 import os
 import sys
 import time
@@ -16,6 +20,7 @@ logging.info('Starting ' + os.path.relpath(sys.argv[0]))
 time.sleep(.001)
 
 # https://www.mathsisfun.com/definitions/coprime.html
+# https://www.mathsisfun.com/definitions/euclidean-algorithm.html
 # https://en.wikipedia.org/wiki/Euclidean_algorithm
 # https://github.com/blindcant/c/blob/master/C-How-To-Program/Chapter05/greatest-common-divisor.c
 
@@ -29,44 +34,46 @@ time.sleep(.001)
 # There are many tools to calculate the GCD of two integers, but for this task we recommend looking up Euclid's Algorithm.
 # Try coding it up; it's only a couple of lines. Use a = 12, b = 8 to test it.
 # Now calculate gcd(a,b) for a = 66528, b = 52920 and enter it below.
-a = 66528
-b = 52920
+n1 = 66528
+n2 = 52920
 
 
-def gcdEuclidSubtractionRecursion(n, m):
+def gcdEuclidSubtractionRecursion(a, b):
 	"""The Euclid subtraction algorithm works as follows.
 1) Start with 2 numbers, a and b.
 2) Find the difference between a and b (large -  small)
 3) Repeat step 2 until a = b or both are 0. This is the GCD.
 Many subtraction steps are necessary so it can be improved with division remainder."""
-	recursionResult = 0
-	o = 0
-	if n == m:
-		return n
-	elif n > m:
-		o = n - m
-		recursionResult = gcdEuclidSubtractionRecursion(m, o)
+	if a == b:
+		return a
+	elif a > b:
+		c = a - b
+		recursionResult = gcdEuclidSubtractionRecursion(b, c)
 	else:
-		o = m - n
-		recursionResult = gcdEuclidSubtractionRecursion(n, o)
+		c = b - a
+		recursionResult = gcdEuclidSubtractionRecursion(a, c)
 	return recursionResult
 
 
-def gcdEuclidModuloRecursion(n, m):
+def gcdEuclidModuloRecursion(a, b):
 	"""The Euclid division remainder algorithm
 1) Start with 2 numbers, a and b.
 2) Reduce the large number. a is now b and b is now a % b.
 3) Repeat 2 until the remainder is 0.
 	"""
-	if m == 0:
-		return n
+	if b == 0:
+		return a
 	else:
-		o = n % m
-		recursionResult = gcdEuclidModuloRecursion(m, o)
+		c = a % b
+		recursionResult = gcdEuclidModuloRecursion(b, c)
 		return recursionResult
 
-answer = gcdEuclidSubtractionRecursion(a,b)
+
+answer = gcdEuclidSubtractionRecursion(n1, n2)
 print('gcdEuclidSubtractionRecursion answer: ' + str(answer))
 
-answer = gcdEuclidModuloRecursion(a,b)
+answer = gcdEuclidModuloRecursion(n1, n2)
 print('gcdEuclidModuloRecursion answer: ' + str(answer))
+
+anwser = math.gcd(n1, n2)
+print('math.gcd answer: ' + str(answer))
