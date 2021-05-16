@@ -75,5 +75,5 @@ print('gcdEuclidSubtractionRecursion answer: ' + str(answer))
 answer = gcdEuclidModuloRecursion(n1, n2)
 print('gcdEuclidModuloRecursion answer: ' + str(answer))
 
-anwser = math.gcd(n1, n2)
+answer = math.gcd(n1, n2)
 print('math.gcd answer: ' + str(answer))
