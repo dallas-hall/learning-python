@@ -70,10 +70,10 @@ def hash_files(algorithm):
 
 	for input_path in INPUT_PATHS:
 		if GLOBAL_DEBUGGING:
-			logging.debug("input_path is: " + input_path)
+			logging.debug("input_path is: " + str(input_path))
 
 		# https://docs.python.org/3/library/pathlib.html#pathlib.Path.glob
-		all_paths = sorted(Path(input_path).glob('**/*'))
+		all_paths = sorted(input_path.glob('**/*'))
 		for path in all_paths:
 			if Path(path).is_dir():
 				continue
@@ -134,10 +134,10 @@ SCRIPT_NAME = Path(sys.argv[0]).name
 # Using https://www.asciitable.com/ control character 31 as a delimiter
 DELIMITER = chr(31)
 INPUT_PATHS = [
-	'/home/blindcant/Development/python/Hashing/input1',
-	'/home/blindcant/Development/python/Hashing/input2'
+	'/home/dallas/Development/python/Hashing/input1',
+	'/home/dallas/Development/python/Hashing/input2'
 ]
-OUTPUT_PATH = Path(SCRIPT_PATH / 'output')
+OUTPUT_PATH = SCRIPT_PATH / 'output'
 SAVE_UNIQUE_FILES = False
 
 logging.info('Starting ' + SCRIPT_NAME)
@@ -151,13 +151,17 @@ if GLOBAL_DEBUGGING:
 available_hash_algorithms = sorted(hashlib.algorithms_available)
 hashing_algorithm = get_hashing_algorithm()
 
-# Get user answers for paths and hashing algorithm
+# Convert input paths to absolute paths
+for i in range(len(INPUT_PATHS)):
+	INPUT_PATHS[i] = get_absolute_path(INPUT_PATHS[i])
+
+# Create output path if it doesn't exist
 if not Path.exists(OUTPUT_PATH):
 	Path.mkdir(OUTPUT_PATH)
 
 if GLOBAL_DEBUGGING:
 	time.sleep(.005)
-	logging.debug('input_path is\n' + str(INPUT_PATHS))
+	logging.debug('INPUT_PATHS is\n' + str(INPUT_PATHS))
 	logging.debug('OUTPUT_PATH is\n' + str(OUTPUT_PATH))
 	logging.debug('hashing_algorithm is\n' + str(hashing_algorithm))
 

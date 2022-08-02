@@ -27,4 +27,4 @@ for i in range(turns):
 	prn = random.randint(0, len(keys) - 1)
 	logging.debug('prn and key is ' + str(prn) + ' ' + keys_string[prn])
 	html.send_keys(keys[prn])
-	time.sleep(1)
+	time.sleep(.250)
