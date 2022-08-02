@@ -41,18 +41,12 @@ dijsktra_output = {
 }
 
 
-def create_graph_nodes():
+def create_graph_nodes_and_edges():
 	# Create the graph nodes using ASCII numbers
 	for c in range(ord('A'), ord('H') + 1):
 		dijsktra_output['all nodes'][chr(c)] = {}
-
-
-def create_graph_edges():
-	for c in range(ord('A'), ord('H') + 1):
 		current_node = dijsktra_output['all nodes'][chr(c)]
-		current_node['linked nodes'] = {
-
-		}
+		current_node['linked nodes'] = {}
 		# Get the edge nodes
 		for e in range(len(graph.get(chr(c)))):
 			# 0 = name
@@ -95,6 +89,5 @@ def dijsktra():
 	print(json.dumps(dijsktra_output, indent=2))
 
 
-create_graph_nodes()
-create_graph_edges()
+create_graph_nodes_and_edges()
 dijsktra()
