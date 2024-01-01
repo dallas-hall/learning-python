@@ -1,3 +1,4 @@
-# Python Crash Course 2nd Edition
+# Python Crash Course 3rd Edition
 
-Me working my way through the book
+Me working my way through the book again as a refresher.
+
