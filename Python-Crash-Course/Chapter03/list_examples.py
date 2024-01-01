@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import logging, sys, os, time
 
@@ -9,11 +9,11 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] -
 debugging = True
 if not debugging:
 	logging.disable(logging.DEBUG)
-# Print start message and delay slightly	
+# Print start message and delay slightly
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.003)
-logging.info("List item manipulations.")
-time.sleep(.003)
+time.sleep(.100)
+
+print("# List Item Manipulations")
 
 # Create a list
 items = ['bag', 'gold', 'cloak', 'staff', 'shield']
@@ -61,24 +61,25 @@ popped_item = items.pop(0)
 print(popped_item)
 print(items)
 
-time.sleep(.003)
-logging.info("Sorting.")
-time.sleep(.003)
+print("\n# List Sorting")
 print("Resetting the list.")
 items = ['bag', 'gold', 'cloak', 'staff', 'shield']
 print(items)
 print("Sorting the list temporarily (alphabetical).")
 print(sorted(items))
-print("Sorting the list temporarily (alphabetical).")
+print("Sorting the list temporarily (reversed alphabetical).")
 print(sorted(items, reverse=True))
 print(items)
 print("Reverse the list permanently.")
 items.reverse()
 print(items)
+print("Reverse the list permanently for the second time, back to the original order.")
+items.reverse()
+print(items)
 print("Sorting the list permanently (alphabetical).")
 items.sort()
 print(items)
-print("Sorting the list permanently (reverse alphabetical).")
+print("Sorting the list permanently (reversed alphabetical).")
 items.sort(reverse=True)
 print(items)
 print("The length of the list is " + str(len(items)))
