@@ -1,4 +1,6 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
+
+print("# Case Manipulation")
 name = 'ada lovelace'
 # Capitalise the first letter of each word, like in a title.
 print(name.title())
@@ -9,6 +11,8 @@ print(name.upper())
 
 first_name = 'ada'
 last_name = 'lovelace'
-# Using a variable's value inside a string
+print("Hello, " + first_name.title() + " " + last_name.title() + "!")
+
+# Using a variable's value inside an f string
 full_name = f"{first_name} {last_name}"
-print(full_name.title())
+print(f"Hello, {full_name.title()}!")
