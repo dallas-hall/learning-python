@@ -10,7 +10,7 @@ if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.003)
+time.sleep(.100)
 
 numbers = [10, 20, 30, 40, 50]
 

@@ -10,15 +10,18 @@ if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.001)
+time.sleep(.100)
 
-hex_digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f']
-print(hex_digits)
-print("Copy the list with [:] into a new list")
-new_list = hex_digits[:]
-print(new_list)
+# 1 to 10, exclude 11
+squares = []
+for i in range(1, 11):
+	# i to the power of 2
+	square = i ** 2
+	squares.append(square)
 
-print("Associate the list with assignment statement and remove the last item.")
-new_list2 = hex_digits
-hex_digits.remove('f')
-print(new_list2)
+print("The square values from 1 to 10.")
+print(squares)
+
+print("List comprehension - combining for loops and element creation into one line.")
+squares = [i ** 2 for i in range(1, 11)]
+print(squares)
