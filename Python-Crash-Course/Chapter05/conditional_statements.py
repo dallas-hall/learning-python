@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 import logging, sys, os, time
 
 # Define logging output
@@ -10,13 +10,24 @@ if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.001)
+time.sleep(.100)
 
-users = ['Alice', 'Bob']
+users = []
+
+if not users:
+	print('Why are there no users?')
+
+users = ['Alice', 'Bob', 'Charlie', 'David']
 for user in users:
-	print(user)
+	if user == 'Alice':
+		print('Alice? Alice? Who the fuck is Alice?')
+	elif user == 'Bob':
+		print('Why are you doing this, Bobby?')
+	else:
+		print(user)
 
 print("Does Alice == alice? " + str(users[0] == 'alice'))
+print("Does Alice.lower() == alice? " + str(users[0].lower() == 'alice'))
 print("Does Alice != alice? " + str(users[0] != 'alice'))
 print("Does Alice == Alice? " + str(users[0] == 'Alice'))
 
