@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 import logging, sys, os, time
 
 # Define logging output
@@ -10,7 +10,7 @@ if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.001)
+time.sleep(.100)
 
 print("Dictionaries are Python's map data structures.")
 dictionary = {}
@@ -24,10 +24,12 @@ print("'key1' points to " + str(dictionary['key1']))
 print("'key2' points to " + str(dictionary['key2']))
 
 # Modifying an existing key value pair
+print('Changing key1.')
 dictionary['key1'] = "The first value in the map (UPDATED)."
 print(dictionary['key1'])
 
 # Deleting an existing key value pair
+print('Deleting key1 and then searching for it a few different ways.')
 del(dictionary['key1'])
 # Returns None when it doesn't exist
 print(dictionary.get('key1'))
