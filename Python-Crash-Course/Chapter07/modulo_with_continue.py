@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 import logging, sys, os, time
 
 # Define logging output
@@ -10,17 +10,12 @@ if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.001)
+time.sleep(.100)
 
-reply = ""
-print("You must be taller than 120cm to go in this ride.")
-while True:
-	reply = input("How tall are you? ")
-	if reply.isdigit():
-		reply = int(reply)
-		break
-
-if int(reply) >= 120:
-	print(f"Great, {reply} cm is tall enough to ride.")
-else:
-	print(f"Sorry, {reply} cm isn't  tall enough to ride.")
+# 1 to 10
+for i in range(1, 11):
+	if i % 2 == 0:
+		print(f"Number {i} is even.")
+	else:
+		# Skip odd numbers.
+		continue
