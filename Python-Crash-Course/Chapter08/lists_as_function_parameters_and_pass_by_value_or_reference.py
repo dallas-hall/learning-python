@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 import logging, sys, os, time
 from pprint import pprint
 
@@ -11,7 +11,7 @@ if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.001)
+time.sleep(.100)
 
 
 def pretty_print_list(list, list_name):
@@ -37,7 +37,6 @@ def show_printed_items(printed_items):
 print_queue = ['resume', 'letter', 'picture']
 printed_items = []
 
-
 # print_queue will not be empty after this function because we are using pass by value
 # Pass by value is done by using slice [:] to copy the list
 print_queue_items(print_queue[:], printed_items)
@@ -50,4 +49,3 @@ printed_items.clear()
 print_queue_items(print_queue, printed_items)
 show_printed_items(printed_items)
 pretty_print_list(print_queue, "print_queue")
-

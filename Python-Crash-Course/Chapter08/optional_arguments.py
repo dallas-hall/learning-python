@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 import logging, sys, os, time
 
 # Define logging output
@@ -10,7 +10,7 @@ if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.001)
+time.sleep(.100)
 
 names = [
 	["john"],
@@ -19,8 +19,9 @@ names = [
 ]
 
 
-# Default value of nothing or its overriden by the user
+# Default value of nothing makes this optional, or its overriden by the value passed in.
 def print_name(first_name, last_name="", middle_name=""):
+	# Python interprets empty strings as True.
 	if middle_name and last_name:
 		formatted_full_name = f"{first_name} {middle_name} {last_name}"
 	elif not middle_name and last_name:
