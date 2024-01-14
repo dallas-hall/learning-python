@@ -1,5 +1,6 @@
 # Superclass must be in the same file and before the sub class(es)
 class Car:
+	"""A Simple car object."""
 	# Constructor
 	def __init__(self, make, model, year):
 		self.make = make
@@ -20,4 +21,10 @@ class Car:
 			print("Cannot roll back the odometer.")
 
 	def increment_odometer(self, kilometers):
-		self.odometer += kilometers
+		if kilometers > 0:
+			self.odometer += kilometers
+		else:
+			print("Kilometers cannot be 0 or negative.")
+
+	def increment_odometer_by_100(self):
+		self.odometer += 100

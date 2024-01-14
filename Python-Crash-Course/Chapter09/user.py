@@ -4,8 +4,10 @@ from pytz import timezone
 
 
 class User:
+	"""A simple user object."""
 	# The constructor, optional argument join_date that if not explicitly passed, is the current timestamp.
-	def __init__(self, name, password, email, join_date=datetime.now(timezone("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")):
+	def __init__(self, name, password, email,
+	             join_date=datetime.now(timezone("Australia/Sydney")).strftime("%Y-%m-%d %H:%M:%S")):
 		self.name = name
 		self.password = password
 		self.email = email
@@ -42,6 +44,9 @@ class User:
 		else:
 			print(f"Incorrect email and/or password.")
 			self.add_failed_login()
+
+	def logout(self):
+		print(f"Goodbye {self.name}.")
 
 	def get_successful_logins(self):
 		return self.successful_logins

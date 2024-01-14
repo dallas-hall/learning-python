@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 import logging, sys, os, time
 from random import randint
 
@@ -47,5 +47,3 @@ else:
 		my_ticket += get_n_random_numbers_as_list(10, 1, 100)
 		my_ticket += get_n_random_capital_letters_as_list(5)
 print(f"You won the lottery after {counter} attempts at getting the winning ticket.")
-
-
