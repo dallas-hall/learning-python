@@ -28,34 +28,32 @@ def get_n_random_capital_letters_as_list(n):
 	return letters
 
 
-def get_n_random_chars_as_list(n, list):
-	# Copy the list, shuffle it, and return the first 5 chars.
-	random_list = list
+def get_n_random_chars_from_list(n, a_list):
+	# Copy the list
+	random_list = a_list
+	# Convert to set to remove duplicates and convert back to list
+	random_list = list(set(random_list))
+	# Shuffle the list and return the first 5 chars.
 	shuffle(random_list)
 	return random_list[:n]
 
 
 lottery_seed_numbers = []
-lottery_seed_numbers += get_n_random_numbers_as_list(10, 1, 10)
+lottery_seed_numbers += get_n_random_numbers_as_list(10, 0, 9)
 lottery_seed_numbers += get_n_random_capital_letters_as_list(5)
 print(lottery_seed_numbers)
-lottery_numbers = []
-for i in range(0, 5):
-	while True:
-		current_choice = choice(lottery_seed_numbers)
-		if current_choice not in lottery_numbers:
-			lottery_numbers.append(choice(lottery_seed_numbers))
-			break
+lottery_numbers = get_n_random_chars_from_list(5, lottery_seed_numbers)
 print(lottery_numbers)
 
 my_ticket = []
 counter = 0
 while True:
-	my_ticket += get_n_random_numbers_as_list(10, 1, 10)
+	my_ticket += get_n_random_numbers_as_list(10, 0, 9)
 	my_ticket += get_n_random_capital_letters_as_list(5)
-	my_ticket = get_n_random_chars_as_list(5, my_ticket)
+	my_ticket = get_n_random_chars_from_list(5, my_ticket)
 
 	print(my_ticket)
+	# Convert to set so it's easier to compare.
 	if set(lottery_numbers) != set(my_ticket):
 		counter += 1
 	else:
