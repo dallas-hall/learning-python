@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # The following code will print The Zen of Python by Tim Peters.
 import this

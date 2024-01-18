@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 print("# Case Manipulation")
 name = 'ada lovelace'

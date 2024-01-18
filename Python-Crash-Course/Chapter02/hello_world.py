@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 message = "Hello world, from a variable lols."
 print(message)

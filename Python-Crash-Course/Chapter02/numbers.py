@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 print('# Integer Math')
 # Integer math, division always yields a float.
