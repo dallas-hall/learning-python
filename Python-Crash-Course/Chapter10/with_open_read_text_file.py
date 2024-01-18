@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import logging, sys, os, time
 
 # Define logging output
@@ -10,9 +10,9 @@ if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.001)
+time.sleep(.100)
 
-absolute_file_path = "/media/veracrypt1/Development/io-files/pi_digits.txt"
+absolute_file_path = "../solutions-and-resources/chapter_10/reading_from_a_file/pi_digits.txt"
 with open(absolute_file_path) as file_object:
 	# Read the entire file at once
 	file_contents = file_object.read()
@@ -36,6 +36,10 @@ with open(absolute_file_path) as file_object:
 with open(absolute_file_path) as file_object:
 	# Store all lines from the file into a list
 	all_file_lines = file_object.readlines()
-
 for line in all_file_lines:
 	print(line.rstrip())
+
+# The above can become
+with open(absolute_file_path) as file_object:
+	for line in file_object.readlines():
+		print(line.rstrip())
