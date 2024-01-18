@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import logging, sys, os, time
 from random import randint, choice, shuffle
 

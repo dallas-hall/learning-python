@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import logging, sys, os, time
 from random import choice
 from dice import Dice

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import logging, sys, os, time
 # To import this in PyCharm, right click the folder and mark as Sources Root
 from user import User
