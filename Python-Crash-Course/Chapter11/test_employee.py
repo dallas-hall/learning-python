@@ -1,45 +1,54 @@
-#!/usr/bin/python3
-import logging, sys, os, time
-import unittest
+import pytest
+
 # To import this in PyCharm, right click the folder and mark as Sources Root
 from employee import Employee
 
-# Define logging output
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - [%(levelname)s] - %(message)s')
 
-# Enable debugging messages
-debugging = True
-if not debugging:
-	logging.disable(logging.DEBUG)
-# Print start message and delay slightly	
-logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.001)
+# Use a pytest decorator to create a test fixture that can be used by all testing functions.
+@pytest.fixture
+def employees():
+	"""An employee testing fixture."""
+	new_hires = {
+		'John Doe': {
+			'department': 'HR'
+		},
+		'Jane Doe': {
+			'department': 'IT',
+			'salary': 75_000
+		},
 
-class EmployeeTestCase(unittest.TestCase):
-	"""
-	Test cases for employee class.
-	"""
+	}
+	employees = []
+	for key, value in new_hires.items():
+		if value.get('salary'):
+			employee = Employee(key, value['department'], value['salary'])
+		else:
+			employee = Employee(key, value['department'])
+		employees.append(employee)
+	return employees
 
-	# This is always run before every test_* is executed
-	def setUp(self):
-		# Create variables for testing
-		names = ["John Doe", "Jane Doe"]
-		self.employees = []
-		for name in names:
-			new_employee = Employee(name, "IT")
-			self.employees.append(new_employee)
 
-	def test_employees_added(self):
-		for employee in self.employees:
-			self.assertIn(employee, self.employees)
+# When a parameter matches the name of a @pytest.fixture decorator, the decorator will automatically run.
+def test_employees_added(employees):
+	"""Test adding an employee."""
+	new_employee = Employee("Roger", "Rabbit", 100_000)
+	employees.append(new_employee)
+	assert new_employee in employees
 
-	def test_give_default_raise(self):
-		self.employees[0].increase_salary()
-		self.assertEqual(self.employees[0].salary, 25000)
 
-	def test_give_specific_raise(self):
-		self.employees[0].increase_salary(15000)
-		self.assertEqual(self.employees[0].salary, 35000)
+def test_give_default_raise(employees):
+	"""Test the default raise of $5,000."""
+	for employee in employees:
+		if employee.name == 'John Doe':
+			assert employee.salary == 50_000
+			employee.increase_salary()
+			assert employee.salary == 55_000
 
-	if __name__ == "__main__":
-		unittest.main()
+
+def test_give_specific_raise(employees):
+	"""Test specific raise of $10,000."""
+	for employee in employees:
+		if employee.name == 'Jane Doe':
+			assert employee.salary == 75_000
+			employee.increase_salary(10_000)
+			assert employee.salary == 85_000

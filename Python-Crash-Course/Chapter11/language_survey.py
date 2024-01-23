@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import logging, sys, os, time
 # To import this in PyCharm, right click the folder and mark as Sources Root
 from survey import AnonymousSurvey
@@ -12,7 +12,7 @@ if not debugging:
 	logging.disable(logging.DEBUG)
 # Print start message and delay slightly	
 logging.info('Starting ' + os.path.relpath(sys.argv[0]))
-time.sleep(.001)
+time.sleep(.100)
 
 # Create a question
 question = "What langauge did you first learn to speak?"
@@ -21,7 +21,6 @@ question = "What langauge did you first learn to speak?"
 my_survey = AnonymousSurvey(question)
 
 # Use the AnonymousSurvey object
-
 while True:
 	my_survey.show_question()
 	response = input()

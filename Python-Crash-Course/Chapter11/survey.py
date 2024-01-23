@@ -9,7 +9,7 @@ class AnonymousSurvey:
 
 	def show_question(self):
 		"""Show the survey question"""
-		print(f"{self.question}")
+		print(f"{self.question}".title())
 
 	def store_response(self, new_response):
 		"""Store a single response."""
@@ -19,4 +19,4 @@ class AnonymousSurvey:
 		"""Show all the responses that have been given."""
 		print("Survey results:")
 		for response in self.responses:
-			print(f"- {response}")
+			print(f"- {response}.".title())

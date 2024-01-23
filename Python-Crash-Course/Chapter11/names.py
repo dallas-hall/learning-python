@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import logging, sys, os, time
 # In PyCharm, right click > Mark Directory As ? Sources root
 from formatted_names import get_formatted_name
@@ -17,10 +17,9 @@ time.sleep(.001)
 done = False
 while not done:
 	first = input("Enter your first name (mandatory): ")
-	middle  = input("Enter your middle name (optional): ")
+	middle = input("Enter your middle name (optional): ")
 	last = input("Enter your last name (optional): ")
 	print(get_formatted_name(first, middle, last))
 	result = input("Enter another name? (y|n): ")
 	if result.lower() == "n":
 		done = True
-
