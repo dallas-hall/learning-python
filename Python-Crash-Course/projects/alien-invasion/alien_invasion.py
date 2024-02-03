@@ -123,6 +123,12 @@ class AlienInvasion:
 			if bullet.rect.bottom <= 0:
 				self.bullets.remove(bullet)
 
+		# Check if any bullets have collided with any aliens. If yes, remove the bullet and the alien.
+		# The groupcollide function compares the rects of each group and looks for collisions.
+		# The first 2 args are the groups to compare.
+		# The second 2 args tell the function if to delete the collided objects.
+		collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+
 	def _update_screen(self):
 		"""Update images on the screen, and flip to the new screen."""
 		# Set the background colour in each redraw of the screen during each loop iteration.
@@ -175,7 +181,23 @@ class AlienInvasion:
 
 	def _update_aliens(self):
 		"""Update the position of all the aliens in the fleet."""
+		self._check_fleet_edges()
 		self.aliens.update()
+
+	def _check_fleet_edges(self):
+		"""React when the alien fleet hits the edge of the screen."""
+		for alien in self.aliens.sprites():
+			if alien.check_edges():
+				self._change_fleet_direction()
+				break
+
+	def _change_fleet_direction(self):
+		"""Drop the fleet down and change direction."""
+		for alien in self.aliens.sprites():
+			alien.rect.y += self.settings.fleet_drop_speed
+		# Multiplying a positive by a negative becomes negative.
+		# Multiplying a negative by a negative becomes positive.
+		self.settings.fleet_direction *= -1
 
 
 # If this program is run as the driver program, then launch the game.
