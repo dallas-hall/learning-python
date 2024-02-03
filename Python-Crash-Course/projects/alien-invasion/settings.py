@@ -13,8 +13,9 @@ class Settings:
 		self.fps = 120
 		# The player's ship movement speed in pixels.
 		self.ship_speed = 2.5
+		self.ship_limit = 3
 		# Bullet settings.
-		self.bullet_speed = self.ship_speed * 2
+		self.bullet_speed = 5
 		self.bullet_width = 3
 		self.bullet_height = 15
 		# Dark gray.

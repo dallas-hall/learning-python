@@ -43,6 +43,15 @@ class Ship:
 		self.rect.x = self.x
 		self.rect.y = self.y
 
+	def center_ship(self):
+		"""Reset the ship to its original position."""
+		# Each new ship starts in the middle of the bottom of the screen
+		self.rect.midbottom = self.screen_rect.midbottom
+		# Store the ship's exact horizontal position.
+		self.x = float(self.rect.x)
+		# Store the ship's exact vertical position.
+		self.y = float(self.rect.y)
+
 	def blit_me(self):
 		"""Draw the ship at its current location"""
 		self.screen.blit(self.image, self.rect)
