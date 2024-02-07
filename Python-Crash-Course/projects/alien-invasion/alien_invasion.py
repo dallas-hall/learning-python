@@ -154,6 +154,8 @@ class AlienInvasion:
 		# Create a new alien fleet if all are shot down.
 		if not self.aliens:
 			self._create_alien_fleet()
+			# Speed up the game during the next round.
+			self.settings.increase_speed()
 
 	def _update_screen(self):
 		"""Update images on the screen, and flip to the new screen."""
@@ -276,6 +278,7 @@ class AlienInvasion:
 
 	def _start_game(self):
 		# Reset the game state and start the game.
+		self.settings.initialise_dynamic_settings()
 		self.stats.reset_stats()
 		self.bullets.empty()
 		self.aliens.empty()
