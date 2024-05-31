@@ -1,11 +1,14 @@
 import pygame
+from pygame.sprite import Sprite
 
 
-class Ship:
+class Ship(Sprite):
     """A class to manage the player's ship"""
 
     def __init__(self, game):
         """Initialise the ship."""
+        # Call the Sprite superclass constructor.
+        super().__init__()
         # Load the game instance.
         self.screen = game.screen
         # Load the game's settings.

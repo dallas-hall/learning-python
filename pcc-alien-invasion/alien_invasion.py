@@ -155,7 +155,8 @@ class AlienInvasion:
         # The groupcollide function compares the rects of each group and looks for collisions.
         # The first 2 args are the groups to compare.
         # The second 2 args tell the function if to delete the collided objects.
-        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
+        collisions = pygame.sprite.groupcollide(
+            self.bullets, self.aliens, True, True)
 
         if collisions:
             for aliens in collisions.values():
@@ -259,6 +260,7 @@ class AlienInvasion:
         if self.stats.ships_left > 0:
             # Remove a player life.
             self.stats.ships_left -= 1
+            self.scoreboard.prep_ships()
 
             # Clear the screen
             self.bullets.empty()
@@ -299,6 +301,7 @@ class AlienInvasion:
         self.stats.reset_stats()
         self.scoreboard.prep_score()
         self.scoreboard.prep_level()
+        self.scoreboard.prep_ships()
         self.bullets.empty()
         self.aliens.empty()
         self._create_alien_fleet()
