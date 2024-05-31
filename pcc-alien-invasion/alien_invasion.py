@@ -168,6 +168,9 @@ class AlienInvasion:
             self._create_alien_fleet()
             # Speed up the game during the next round.
             self.settings.increase_speed()
+            # Go up a level.
+            self.stats.level += 1
+            self.scoreboard.prep_level()
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
@@ -295,6 +298,7 @@ class AlienInvasion:
         self.settings.initialise_dynamic_settings()
         self.stats.reset_stats()
         self.scoreboard.prep_score()
+        self.scoreboard.prep_level()
         self.bullets.empty()
         self.aliens.empty()
         self._create_alien_fleet()
